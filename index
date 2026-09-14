@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+        * { -webkit-tap-highlight-color: transparent; outline: none; box-sizing: border-box; }
+
+        body { 
+            margin: 0; 
+            padding: 2px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: space-between; 
+            background: #000000; 
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            font-family: 'Arial Black', sans-serif; 
+            overflow: hidden; 
+            touch-action: none; 
+            position: relative;
+        }
+
+        .game-viewport {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            padding-right: 75px;
+        }
+
+        /* عمود القيم الجانبي بدون هوامش مهدورة */
+        .legend-panel {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            right: 2px;
+            top: 65px;
+            background: #111;
+            padding: 2px;
+            border-radius: 6px;
+            border: 2px solid #444;
+            z-index: 10;
+            gap: 2px;
+            width: 70px;
+        }
+
+        .legend-item {
+            color: #FFD700;
+            font-size: 0.6em;
+            font-weight: 900;
+            text-align: center;
+            padding: 1px 0;
+            background: #222;
+            border-radius: 3px;
+            border: 1px solid #333;
+            width: 100%;
+        }
+
+        /* لوحات النقاط العلوية */
+        .top-panel-wrapper {
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between;
+            width: 100%;
+            gap: 2px;
+            flex: 0 0 auto;
+        }
+
+        .side-column {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            gap: 1px;
+            cursor: pointer;
+        }
+
+        .score-box {
+            flex: 1;
+            width: 100%;
+            min-height: 48px;
+            background: transparent;
+            border: none;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 0 2px;
+            gap: 2px;
+            overflow-x: auto;
+            transition: all 0.3s;
+        }
+
+        .score-box.winner-blink {
+            animation: scoreBlink 0.6s infinite alternate;
+            border-radius: 8px;
+            background: rgba(0, 255, 204, 0.25);
+        }
+
+        @keyframes scoreBlink {
+            0% { box-shadow: 0 0 5px #00ffcc, inset 0 0 5px #00ffcc; filter: brightness(1); }
+            100% { box-shadow: 0 0 25px #00ffcc, inset 0 0 15px #00ffcc; filter: brightness(1.3); }
+        }
+
+        /* زر أهلاً وسهلاً */
+        .welcome-badge {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #111;
+            border: 2px solid #FFD700;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            font-size: 0.45em;
+            font-weight: 900;
+            color: #FFD700;
+            text-align: center;
+            line-height: 1;
+            flex-shrink: 0;
+            padding: 0;
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(255,215,0,0.3);
+            transition: transform 0.1s;
+        }
+
+        .welcome-badge:active {
+            transform: scale(0.92);
+        }
+
+        .transferred-word-badge {
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-weight: 900;
+            font-size: 0.85em;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            animation: popIn 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.3);
+            white-space: nowrap;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            80% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        /* شبكة البالونات (بدون هوامش لملء الشاشة بالكامل) */
+        .balloons-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            gap: 2px;
+            width: 100%;
+            flex: 1;
+            margin: 2px 0;
+            padding: 0;
+            max-width: 460px;
+        }
+
+        /* شكل البالون مع إلغاء الهوامش الداخلية ليلامس النص الحدود */
+        .balloon {
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at 35% 30%, #ffffff, #a4b0be 50%, #2f3640 100%);
+            border-radius: 50% 50% 50% 50% / 55% 55% 45% 45%;
+            box-shadow: inset -2px -2px 6px rgba(0,0,0,0.6), 0 2px 4px rgba(255,255,255,0.2);
+            position: relative;
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            animation: floatBalloon 2.2s ease-in-out infinite alternate;
+            padding: 0;
+        }
+
+        .balloon:nth-child(odd) {
+            animation-duration: 1.8s;
+            background: radial-gradient(circle at 35% 30%, #fffdf0, #e1b12c 50%, #7158e2 100%);
+        }
+
+        @keyframes floatBalloon {
+            0% { transform: translateY(0px) rotate(-1deg); }
+            100% { transform: translateY(-2px) rotate(1deg); }
+        }
+
+        .mixing-anim {
+            animation: vortexMix 2.0s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+        }
+
+        @keyframes vortexMix {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); z-index: 1; }
+            30% { transform: translate(var(--mx), var(--my)) scale(0.15) rotate(360deg); z-index: 100; }
+            60% { transform: translate(var(--mx), var(--my)) scale(0.15) rotate(720deg) scale(1.1); z-index: 100; }
+            100% { transform: translate(0, 0) scale(1) rotate(1080deg); z-index: 1; }
+        }
+
+        /* توهج ذهبي للبالون الأسطوري (مع دعم التوهج عند الكشف) */
+        .balloon.legendary-gold-pulse, .balloon.revealed.is-legendary {
+            animation: goldPulseAnim 0.5s infinite alternate !important;
+            background: radial-gradient(circle at 35% 30%, #ffffff, #FFD700 50%, #b8860b 100%) !important;
+            border: 2px solid #FFF;
+        }
+
+        @keyframes goldPulseAnim {
+            0% { transform: scale(1); box-shadow: 0 0 12px #FFD700, inset 0 0 6px #FFF; filter: brightness(1); }
+            100% { transform: scale(1.08); box-shadow: 0 0 35px #FFD700, inset 0 0 18px #FFF; filter: brightness(1.4); }
+        }
+
+        /* الحروف الخارجية ضخمة ومالية البالون بدون هوامش */
+        .balloon-text {
+            font-size: 2.1em;
+            font-weight: 900;
+            color: #000000;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.9);
+            text-align: center;
+            line-height: 1;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* الكلمة الداخلية عند الكشف ضخمة ومالية العنصر تماماً */
+        .inner-word {
+            font-size: 1.25em;
+            font-weight: 900;
+            color: #000000;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.9);
+            text-align: center;
+            line-height: 1;
+            margin: 0;
+            padding: 0;
+            display: none;
+        }
+
+        .balloon.revealed .balloon-text {
+            display: none; 
+        }
+
+        .balloon.revealed .inner-word {
+            display: block; 
+        }
+
+        .balloon.popped {
+            visibility: hidden;
+            opacity: 0;
+            pointer-events: none;
+            animation: none;
+            transform: scale(0);
+            transition: all 0.2s ease;
+        }
+
+        .flying-word {
+            position: fixed;
+            font-size: 1.2em;
+            font-weight: 900;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 6px;
+            z-index: 999;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.8);
+            animation: flyToScore 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes flyToScore {
+            0% { transform: scale(1.4) translate(0, 0); opacity: 1; }
+            100% { transform: scale(0.6) translate(var(--destX), var(--destY)); opacity: 0.8; }
+        }
+
+        .star-particle {
+            position: absolute;
+            font-size: 0.9em;
+            pointer-events: none;
+            animation: burstStar 0.5s ease-out forwards;
+        }
+
+        @keyframes burstStar {
+            0% { transform: translate(0, 0) scale(0.5); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(1.3); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-viewport" id="gameViewport">
+        <!-- عمود القيم الجانبي -->
+        <div class="legend-panel">
+            <div class="legend-item" style="color: #FFD700; text-shadow: 0 0 5px #FFD700;">8- أسطوري</div>
+            <div class="legend-item">7- مبدع</div>
+            <div class="legend-item">6- رائع</div>
+            <div class="legend-item">5- ممتاز</div>
+            <div class="legend-item">4- جيد جداً</div>
+            <div class="legend-item">3- جيد</div>
+            <div class="legend-item">2- مقبول</div>
+            <div class="legend-item">1- ضعيف</div>
+        </div>
+
+        <!-- لوحات النقاط وزر أهلاً وسهلاً -->
+        <div class="top-panel-wrapper">
+            <div class="side-column" onclick="setGameMode('numbers')">
+                <div class="score-box" id="container1">
+                    <div id="side1Badges" style="display:flex; gap:2px; flex-wrap:wrap; align-items:center;"></div>
+                </div>
+            </div>
+
+            <div class="welcome-badge" onclick="toggleRevealAndMix()" title="كشف / تغطية وخلط">أهلاً<br>وسهلاً</div>
+
+            <div class="side-column" onclick="triggerKeyGameWithMix()">
+                <div class="score-box" id="container2" style="justify-content:flex-end;">
+                    <div id="side2Badges" style="display:flex; gap:2px; flex-wrap:wrap; align-items:center; flex-direction:row-reverse;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- شبكة البالونات -->
+        <div class="balloons-grid" id="balloonsGrid"></div>
+    </div>
+
+    <script>
+        let gameMode = 'numbers'; 
+        let mode = 3; 
+        let selectionsSide1 = [];
+        let selectionsSide2 = [];
+        let balloonsData = [];
+        let gameActive = true;
+        let currentTurnSide = 1; 
+        let isRevealed = false; 
+
+        const arabicNames = ["أحمد", "علي", "عمر", "زيد", "خالد", "بكر", "حمزة", "صالح"];
+        const alphabet = "ABDEFGHIJKLMNOPQRSTUVWXYZ".split('');
+
+        const levelWords = [
+            { text: "ضعيف", val: 1, color: "#e74c3c", note: 300 },
+            { text: "مقبول", val: 2, color: "#e67e22", note: 400 },
+            { text: "جيد", val: 3, color: "#f1c40f", note: 500 },
+            { text: "جيد جداً", val: 4, color: "#3498db", note: 600 },
+            { text: "ممتاز", val: 5, color: "#9b59b6", note: 700 },
+            { text: "رائع", val: 6, color: "#2ecc71", note: 800 },
+            { text: "مبدع", val: 7, color: "#1abc9c", note: 1000 },
+            { text: "أسطوري", val: 8, color: "#FFD700", note: 1320 }
+        ];
+
+        let audioCtx = null;
+        function initAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function playHarmonicTone(freq) {
+            try {
+                initAudio();
+                let now = audioCtx.currentTime;
+                
+                let bufferSize = audioCtx.sampleRate * 0.12;
+                let buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                let data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.5;
+
+                let noise = audioCtx.createBufferSource();
+                noise.buffer = buffer;
+                let filter = audioCtx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.setValueAtTime(500, now);
+
+                let gain1 = audioCtx.createGain();
+                gain1.gain.setValueAtTime(0.3, now);
+                gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+                noise.connect(filter);
+                filter.connect(gain1);
+                gain1.connect(audioCtx.destination);
+                noise.start(now);
+                noise.stop(now + 0.12);
+
+                [freq, freq * 1.25, freq * 1.5].forEach((f, idx) => {
+                    let osc = audioCtx.createOscillator();
+                    let gain2 = audioCtx.createGain();
+                    osc.type = idx === 0 ? 'triangle' : 'sine';
+                    osc.frequency.setValueAtTime(f, now + 0.04);
+                    gain2.gain.setValueAtTime(0, now + 0.04);
+                    gain2.gain.linearRampToValueAtTime(0.25, now + 0.08);
+                    gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+
+                    osc.connect(gain2);
+                    gain2.connect(audioCtx.destination);
+                    osc.start(now + 0.04);
+                    osc.stop(now + 0.5);
+                });
+            } catch (e) {}
+        }
+
+        function generateBalloonsData() {
+            let pool = [];
+            let legendaryIndex = Math.floor(Math.random() * 32);
+            let alphabetIndex = 0;
+
+            for (let i = 0; i < 32; i++) {
+                let col = i % 4;
+                let row = Math.floor(i / 4);
+                let outerText = (col === 0) ? arabicNames[row] : alphabet[alphabetIndex++ % alphabet.length];
+
+                let wordObj;
+                if (i === legendaryIndex) {
+                    wordObj = levelWords[7]; 
+                } else {
+                    wordObj = levelWords[Math.floor(Math.random() * (levelWords.length - 1))];
+                }
+
+                pool.push({
+                    id: i,
+                    text: outerText,
+                    isName: (col === 0),
+                    rowIndex: row,
+                    wordData: wordObj
+                });
+            }
+            return pool;
+        }
+
+        function renderBalloons() {
+            const grid = document.getElementById('balloonsGrid');
+            grid.innerHTML = '';
+            balloonsData = generateBalloonsData();
+            isRevealed = false;
+
+            for (let i = 0; i < 32; i++) {
+                let item = balloonsData[i];
+                let isLeg = (item.wordData.val === 8);
+                grid.innerHTML += `
+                    <div class="balloon ${isLeg ? 'is-legendary' : ''}" id="balloon-${i}" onclick="handleBalloonClick(${i})">
+                        <span class="balloon-text">${item.text}</span>
+                        <span class="inner-word" style="color:${isLeg ? '#000000' : '#000000'};">${item.wordData.text}</span>
+                    </div>`;
+            }
+        }
+
+        function toggleRevealAndMix() {
+            let cards = document.querySelectorAll('.balloon');
+            if (!isRevealed) {
+                isRevealed = true;
+                cards.forEach(card => card.classList.add('revealed'));
+            } else {
+                triggerMixAnimation(() => {
+                    renderBalloons();
+                });
+            }
+        }
+
+        function handleBalloonClick(index) {
+            if (!gameActive) return;
+            let item = balloonsData[index];
+
+            if (gameMode === 'key' && item.isName) {
+                openRowGradually(item.rowIndex);
+            } else if (gameMode === 'numbers') {
+                let balloonEl = document.getElementById(`balloon-${index}`);
+                if (balloonEl.classList.contains('popped')) return;
+
+                balloonEl.classList.add('popped');
+                playHarmonicTone(item.wordData.note);
+                createStarBurst(balloonEl, item.wordData.color);
+                animateFlyingWord(balloonEl, item.wordData);
+
+                if (currentTurnSide === 1) {
+                    selectionsSide1.push(item.wordData);
+                    if (selectionsSide1.length >= mode && selectionsSide2.length < mode) {
+                        currentTurnSide = 2;
+                    }
+                } else {
+                    selectionsSide2.push(item.wordData);
+                }
+
+                updateScoresDisplay();
+            }
+        }
+
+        function openRowGradually(rowIndex) {
+            let startIndex = rowIndex * 4;
+            let rowHasLegendary = false;
+            let legendaryBalloonEl = null;
+
+            for (let i = 0; i < 4; i++) {
+                let balloonIdx = startIndex + i;
+                let balloonEl = document.getElementById(`balloon-${balloonIdx}`);
+                if (balloonEl && !balloonEl.classList.contains('popped')) {
+                    let wordData = balloonsData[balloonIdx].wordData;
+                    
+                    if (wordData.val === 8) {
+                        rowHasLegendary = true;
+                        legendaryBalloonEl = balloonEl;
+                        break;
+                    } else {
+                        setTimeout(() => {
+                            balloonEl.classList.add('popped');
+                            playHarmonicTone(wordData.note);
+                        }, i * 200);
+                    }
+                }
+            }
+
+            if (rowHasLegendary && legendaryBalloonEl) {
+                setTimeout(() => {
+                    legendaryBalloonEl.classList.remove('popped');
+                    legendaryBalloonEl.classList.add('legendary-gold-pulse');
+                    legendaryBalloonEl.innerHTML = '<span class="balloon-text" style="color:#000000; text-shadow:0 0 4px #FFF;">أسطوري</span>';
+                    playHarmonicTone(1320);
+                    gameActive = false;
+                }, 400);
+            }
+        }
+
+        function triggerMixAnimation(callback) {
+            let cards = document.querySelectorAll('.balloon');
+            let parentRect = document.getElementById('gameViewport').getBoundingClientRect();
+            let centerX = parentRect.width / 2;
+            let centerY = parentRect.height / 2;
+
+            cards.forEach((card) => {
+                let rect = card.getBoundingClientRect();
+                let cardCenterX = rect.left - parentRect.left + (rect.width / 2);
+                let cardCenterY = rect.top - parentRect.top + (rect.height / 2);
+                
+                let mx = centerX - cardCenterX;
+                let my = centerY - cardCenterY;
+
+                card.style.setProperty('--mx', `${mx}px`);
+                card.style.setProperty('--my', `${my}px`);
+                card.classList.add('mixing-anim');
+            });
+
+            setTimeout(() => {
+                if (callback) callback();
+                cards.forEach(card => card.classList.remove('mixing-anim'));
+            }, 2000);
+        }
+
+        function triggerKeyGameWithMix() {
+            gameMode = 'key';
+            triggerMixAnimation(() => {
+                resetGame();
+            });
+        }
+
+        function setGameMode(modeType) {
+            gameMode = modeType;
+            resetGame();
+        }
+
+        function createStarBurst(element, color) {
+            let rect = element.getBoundingClientRect();
+            let parent = document.getElementById('gameViewport');
+            for (let i = 0; i < 8; i++) {
+                let star = document.createElement('div');
+                star.className = 'star-particle';
+                star.innerText = '⭐';
+                star.style.left = `${rect.left + rect.width / 2}px`;
+                star.style.top = `${rect.top + rect.height / 2}px`;
+                star.style.color = color;
+
+                let angle = (i * 45) * (Math.PI / 180);
+                let distance = 40 + Math.random() * 25;
+                star.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
+                star.style.setProperty('--ty', `${Math.sin(angle) * distance}px`);
+
+                parent.appendChild(star);
+                setTimeout(() => star.remove(), 500);
+            }
+        }
+
+        function animateFlyingWord(element, wordData) {
+            let rect = element.getBoundingClientRect();
+            let targetContainer = document.getElementById(currentTurnSide === 1 ? 'container1' : 'container2');
+            let targetRect = targetContainer.getBoundingClientRect();
+
+            let flyer = document.createElement('div');
+            flyer.className = 'flying-word';
+            flyer.innerText = wordData.text;
+            flyer.style.background = wordData.color;
+            flyer.style.left = `${rect.left}px`;
+            flyer.style.top = `${rect.top}px`;
+
+            let destX = targetRect.left + 20 - rect.left;
+            let destY = targetRect.top + 10 - rect.top;
+            flyer.style.setProperty('--destX', `${destX}px`);
+            flyer.style.setProperty('--destY', `${destY}px`);
+
+            document.body.appendChild(flyer);
+            setTimeout(() => flyer.remove(), 800);
+        }
+
+        function updateScoresDisplay() {
+            if (gameMode === 'key') return;
+
+            let badges1 = '', badges2 = '';
+            let sum1 = 0, sum2 = 0;
+
+            selectionsSide1.forEach((word) => {
+                sum1 += word.val;
+                badges1 += `<span class="transferred-word-badge" style="background:${word.color};">${word.text}</span>`;
+            });
+            selectionsSide2.forEach((word) => {
+                sum2 += word.val;
+                badges2 += `<span class="transferred-word-badge" style="background:${word.color};">${word.text}</span>`;
+            });
+
+            document.getElementById('side1Badges').innerHTML = badges1;
+            document.getElementById('side2Badges').innerHTML = badges2;
+
+            let box1 = document.getElementById('container1');
+            let box2 = document.getElementById('container2');
+            box1.classList.remove('winner-blink');
+            box2.classList.remove('winner-blink');
+
+            if (selectionsSide1.length > 0 || selectionsSide2.length > 0) {
+                if (sum1 > sum2) {
+                    box1.classList.add('winner-blink');
+                } else if (sum2 > sum1) {
+                    box2.classList.add('winner-blink');
+                }
+            }
+        }
+
+        function resetGame() {
+            gameActive = true;
+            selectionsSide1 = [];
+            selectionsSide2 = [];
+            currentTurnSide = 1;
+            document.getElementById('side1Badges').innerHTML = '';
+            document.getElementById('side2Badges').innerHTML = '';
+            document.getElementById('container1').classList.remove('winner-blink');
+            document.getElementById('container2').classList.remove('winner-blink');
+            renderBalloons();
+        }
+
+        renderBalloons();
+    </script>
+</body>
+</html>

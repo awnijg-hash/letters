@@ -12,11 +12,33 @@
             width: 100vw;
             height: 100vh;
             height: 100dvh;
-            background: #000000;
+            /* خلفية فاتحة بالوسط وأطراف غامقة بدون أي تأثير عام على الصفحة */
+            background: radial-gradient(circle at center, #38bdf8 0%, #0284c7 40%, #0369a1 70%, #0f172a 100%);
             font-family: 'Arial Black', sans-serif;
             overflow: hidden;
             touch-action: none;
             position: fixed;
+        }
+
+        /* طبقة خاصة بالخلفية فقط لتعمل موجة أزرق غامق متحركة كل 10 ثواني بدون التأثير على الكرات */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(2, 6, 23, 0.75) 0%, transparent 60%);
+            opacity: 0;
+            animation: darkWaveEffect 10s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes darkWaveEffect {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 0.85; } /* موجة أزرق غامق تظهر وتتحرك بالخلفية */
+            100% { transform: scale(1.8); opacity: 0; }
         }
 
         .game-viewport {
@@ -31,14 +53,14 @@
             position: relative;
         }
 
-        /* زر ملء الشاشة السريع والشفاف بأعلى الزاوية لتجاوز قيود المتصفح */
+        /* زر ملء الشاشة السريع والشفاف بأعلى الزاوية */
         .fs-btn {
             position: absolute;
             top: 2px;
             left: 4px;
-            background: rgba(255, 215, 0, 0.2);
-            border: 1px solid #FFD700;
-            color: #FFD700;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #1e293b;
+            color: #fff;
             font-size: 0.55em;
             font-weight: 900;
             padding: 4px 8px;
@@ -47,7 +69,7 @@
             z-index: 100;
         }
 
-        /* لوحات النقاط العلوية مرتاحة وواسعة */
+        /* لوحات النقاط العلوية */
         .top-panel-wrapper {
             display: flex;
             align-items: stretch;
@@ -55,7 +77,7 @@
             width: 100%;
             gap: 4px;
             flex: 0 0 auto;
-            margin-top: 18px; /* مساحة لزر ملء الشاشة */
+            margin-top: 18px;
         }
 
         .side-column {
@@ -70,8 +92,8 @@
             flex: 1;
             width: 100%;
             min-height: 55px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid #333;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(2, 132, 199, 0.5);
             border-radius: 8px;
             display: flex;
             justify-content: flex-start;
@@ -85,12 +107,12 @@
         .score-box.winner-blink {
             animation: scoreBlink 0.6s infinite alternate;
             border-radius: 8px;
-            background: rgba(0, 255, 204, 0.25);
+            background: rgba(0, 255, 204, 0.4);
         }
 
         @keyframes scoreBlink {
             0% { box-shadow: 0 0 5px #00ffcc, inset 0 0 5px #00ffcc; filter: brightness(1); }
-            100% { box-shadow: 0 0 25px #00ffcc, inset 0 0 15px #00ffcc; filter: brightness(1.3); }
+            100% { box-shadow: 0 0 25px #00ffcc, inset 0 0 15px #00ffcc; filter: brightness(1.2); }
         }
 
         /* زر أهلاً وسهلاً */
@@ -98,19 +120,19 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: #111;
-            border: 2px solid #FFD700;
+            background: rgba(255, 255, 255, 0.6);
+            border: 2px solid #0369a1;
             border-radius: 50%;
             width: 48px;
             height: 48px;
             font-size: 0.45em;
             font-weight: 900;
-            color: #FFD700;
+            color: #0369a1;
             text-align: center;
             line-height: 1.1;
             flex-shrink: 0;
             cursor: pointer;
-            box-shadow: 0 0 10px rgba(255,215,0,0.4);
+            box-shadow: 0 0 10px rgba(3, 105, 161, 0.3);
             transition: transform 0.1s;
         }
 
@@ -123,13 +145,13 @@
             border-radius: 5px;
             font-weight: 900;
             font-size: 0.9em;
-            color: #fff;
-            text-shadow: 0 2px 2px rgba(0,0,0,0.8);
+            color: #000;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
             display: inline-flex;
             align-items: center;
             justify-content: center;
             animation: popIn 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 1px solid rgba(0,0,0,0.2);
             white-space: nowrap;
         }
 
@@ -139,7 +161,72 @@
             100% { transform: scale(1); }
         }
 
-        /* شبكة البالونات بملء الشاشة تماماً وبأقصى مساحة */
+        /* عمود التقييمات الصافي بوسط الشاشة */
+        .center-legend-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            background: rgba(15, 23, 42, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            z-index: 9999;
+            cursor: pointer;
+            padding: 20px;
+        }
+
+        .center-legend-container {
+            width: 100%;
+            max-width: 340px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            border: 2px solid #FFD700;
+            padding: 10px;
+            background: #111;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.4);
+        }
+
+        .center-legend-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(0deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: sweepLight 4s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+
+        @keyframes sweepLight {
+            0% { transform: translateY(-35%); }
+            100% { transform: translateY(35%); }
+        }
+
+        .center-legend-item {
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-weight: 900;
+            font-size: 1.2em;
+            text-align: center;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,255,255,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* شبكة البالونات */
         .balloons-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -151,7 +238,6 @@
             padding: 0;
         }
 
-        /* شكل البالون الاحترافي */
         .balloon {
             width: 100%;
             height: 100%;
@@ -188,7 +274,6 @@
             100% { transform: translate(0, 0) scale(1) rotate(1080deg); z-index: 1; }
         }
 
-        /* توهج ذهبي للبالون الأسطوري */
         .balloon.legendary-gold-pulse, .balloon.revealed.is-legendary {
             animation: goldPulseAnim 0.5s infinite alternate !important;
             background: radial-gradient(circle at 35% 30%, #ffffff, #FFD700 50%, #b8860b 100%) !important;
@@ -200,7 +285,6 @@
             100% { transform: scale(1.12); box-shadow: 0 0 40px #FFD700, inset 0 0 22px #FFF; filter: brightness(1.4); }
         }
 
-        /* الحروف الخارجية ضخمة وواضحة */
         .balloon-text {
             font-size: 2.3em;
             font-weight: 900;
@@ -210,7 +294,6 @@
             line-height: 1;
         }
 
-        /* الكلمة الداخلية عند الكشف */
         .inner-word {
             font-size: 1.35em;
             font-weight: 900;
@@ -267,20 +350,19 @@
 <body>
 
     <div class="game-viewport" id="gameViewport">
-        <!-- زر ملء الشاشة السريع لتجاوز قيود متصفح الجوال -->
         <button class="fs-btn" onclick="toggleFullScreen()">⛶ ملء الشاشة</button>
 
         <!-- لوحات النقاط العلوية -->
         <div class="top-panel-wrapper">
-            <div class="side-column" onclick="setGameMode('numbers')">
+            <div class="side-column" onclick="playHarmonicTone(400); setGameMode('numbers')">
                 <div class="score-box" id="container1">
                     <div id="side1Badges" style="display:flex; gap:2px; flex-wrap:wrap; align-items:center;"></div>
                 </div>
             </div>
 
-            <div class="welcome-badge" onclick="toggleRevealAndMix()" title="كشف / تغطية وخلط">أهلاً<br>وسهلاً</div>
+            <div class="welcome-badge" onclick="playHarmonicTone(500); toggleRevealAndMix()" title="كشف / تغطية وخلط">أهلاً<br>وسهلاً</div>
 
-            <div class="side-column" onclick="triggerKeyGameWithMix()">
+            <div class="side-column" onclick="playHarmonicTone(400); triggerKeyGameWithMix()">
                 <div class="score-box" id="container2" style="justify-content:flex-end;">
                     <div id="side2Badges" style="display:flex; gap:2px; flex-wrap:wrap; align-items:center; flex-direction:row-reverse;"></div>
                 </div>
@@ -289,6 +371,20 @@
 
         <!-- شبكة البالونات -->
         <div class="balloons-grid" id="balloonsGrid"></div>
+
+        <!-- عمود التقييمات الصافي بوسط الشاشة -->
+        <div id="centerLegend" class="center-legend-overlay" style="display: none;" onclick="closeLegendAndStartGame()">
+            <div class="center-legend-container">
+                <div class="center-legend-item" style="background:#FFD700; color:#000;"><span>8 - أسطوري</span><span>⭐</span></div>
+                <div class="center-legend-item" style="background:#1abc9c;"><span>7 - مبدع</span><span>⭐</span></div>
+                <div class="center-legend-item" style="background:#2ecc71;"><span>6 - رائع</span><span>⭐</span></div>
+                <div class="center-legend-item" style="background:#9b59b6;"><span>5 - ممتاز</span><span>⭐</span></div>
+                <div class="center-legend-item" style="background:#3498db;"><span>4 - جيد جداً</span><span>⭐</span></div>
+                <div class="center-legend-item" style="background:#f1c40f; color:#000;"><span>3 - جيد</span><span>⭐</span></div>
+                <div class="center-legend-item" style="background:#e67e22;"><span>2 - مقبول</span><span>⭐</span></div>
+                <div class="center-legend-item" style="background:#e74c3c;"><span>1 - ضعيف</span><span>⭐</span></div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -322,12 +418,11 @@
         }
 
         function toggleFullScreen() {
+            initAudio();
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().catch(err => {});
             } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
+                if (document.exitFullscreen) document.exitFullscreen();
             }
         }
 
@@ -420,6 +515,7 @@
         }
 
         function toggleRevealAndMix() {
+            playHarmonicTone(600);
             let cards = document.querySelectorAll('.balloon');
             if (!isRevealed) {
                 isRevealed = true;
@@ -432,6 +528,7 @@
         }
 
         function handleBalloonClick(index) {
+            playHarmonicTone(700);
             if (!gameActive) return;
             let item = balloonsData[index];
 
@@ -494,7 +591,8 @@
             }
         }
 
-        function triggerMixAnimation(callback) {
+        function triggerMixAnimation(afterMixCallback) {
+            playHarmonicTone(550);
             let cards = document.querySelectorAll('.balloon');
             let parentRect = document.getElementById('gameViewport').getBoundingClientRect();
             let centerX = parentRect.width / 2;
@@ -515,9 +613,17 @@
             });
 
             setTimeout(() => {
-                if (callback) callback();
+                if (afterMixCallback) afterMixCallback();
                 cards.forEach(card => card.classList.remove('mixing-anim'));
+                
+                document.getElementById('centerLegend').style.display = 'flex';
+                playHarmonicTone(900);
             }, 2000);
+        }
+
+        function closeLegendAndStartGame() {
+            playHarmonicTone(800);
+            document.getElementById('centerLegend').style.display = 'none';
         }
 
         function triggerKeyGameWithMix() {
@@ -529,7 +635,9 @@
 
         function setGameMode(modeType) {
             gameMode = modeType;
-            resetGame();
+            triggerMixAnimation(() => {
+                resetGame();
+            });
         }
 
         function createStarBurst(element, color) {

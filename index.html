@@ -2,25 +2,21 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <style>
         * { -webkit-tap-highlight-color: transparent; outline: none; box-sizing: border-box; }
 
-        body { 
-            margin: 0; 
-            padding: 2px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: space-between; 
-            background: #000000; 
+        html, body {
+            margin: 0;
+            padding: 0;
             width: 100vw;
             height: 100vh;
             height: 100dvh;
-            font-family: 'Arial Black', sans-serif; 
-            overflow: hidden; 
-            touch-action: none; 
-            position: relative;
+            background: #000000;
+            font-family: 'Arial Black', sans-serif;
+            overflow: hidden;
+            touch-action: none;
+            position: fixed;
         }
 
         .game-viewport {
@@ -30,17 +26,17 @@
             justify-content: space-between;
             width: 100%;
             height: 100%;
+            padding: 4px;
             z-index: 2;
-            padding: 0;
         }
 
-        /* لوحات النقاط العلوية تأخذ كامل عرض الشاشة */
+        /* لوحات النقاط العلوية مرتاحة وواسعة */
         .top-panel-wrapper {
             display: flex;
             align-items: stretch;
             justify-content: space-between;
             width: 100%;
-            gap: 2px;
+            gap: 4px;
             flex: 0 0 auto;
         }
 
@@ -48,21 +44,22 @@
             display: flex;
             flex-direction: column;
             flex: 1;
-            gap: 1px;
+            gap: 2px;
             cursor: pointer;
         }
 
         .score-box {
             flex: 1;
             width: 100%;
-            min-height: 48px;
-            background: transparent;
-            border: none;
+            min-height: 60px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333;
+            border-radius: 8px;
             display: flex;
             justify-content: flex-start;
             align-items: center;
-            padding: 0 4px;
-            gap: 2px;
+            padding: 0 6px;
+            gap: 4px;
             overflow-x: auto;
             transition: all 0.3s;
         }
@@ -86,17 +83,16 @@
             background: #111;
             border: 2px solid #FFD700;
             border-radius: 50%;
-            width: 46px;
-            height: 46px;
+            width: 52px;
+            height: 52px;
             font-size: 0.45em;
             font-weight: 900;
             color: #FFD700;
             text-align: center;
-            line-height: 1;
+            line-height: 1.1;
             flex-shrink: 0;
-            padding: 0;
             cursor: pointer;
-            box-shadow: 0 0 8px rgba(255,215,0,0.3);
+            box-shadow: 0 0 10px rgba(255,215,0,0.4);
             transition: transform 0.1s;
         }
 
@@ -105,12 +101,12 @@
         }
 
         .transferred-word-badge {
-            padding: 2px 4px;
-            border-radius: 4px;
+            padding: 3px 6px;
+            border-radius: 5px;
             font-weight: 900;
-            font-size: 0.85em;
+            font-size: 0.9em;
             color: #fff;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            text-shadow: 0 2px 2px rgba(0,0,0,0.8);
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -125,19 +121,19 @@
             100% { transform: scale(1); }
         }
 
-        /* شبكة البالونات بملء الشاشة تماماً بدون أي حواجز جانبية */
+        /* شبكة البالونات بملء الشاشة تماماً وبأقصى مساحة */
         .balloons-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(8, 1fr);
-            gap: 2px;
+            gap: 3px;
             width: 100%;
             flex: 1;
-            margin: 2px 0;
+            margin: 4px 0;
             padding: 0;
         }
 
-        /* شكل البالون بملء المساحة المتاحة */
+        /* شكل البالون الاحترافي */
         .balloon {
             width: 100%;
             height: 100%;
@@ -151,7 +147,6 @@
             position: relative;
             transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
             animation: floatBalloon 2.2s ease-in-out infinite alternate;
-            padding: 0;
         }
 
         .balloon:nth-child(odd) {
@@ -175,7 +170,7 @@
             100% { transform: translate(0, 0) scale(1) rotate(1080deg); z-index: 1; }
         }
 
-        /* توهج ذهبي للبالون الأسطوري (وعند الكشف) */
+        /* توهج ذهبي للبالون الأسطوري */
         .balloon.legendary-gold-pulse, .balloon.revealed.is-legendary {
             animation: goldPulseAnim 0.5s infinite alternate !important;
             background: radial-gradient(circle at 35% 30%, #ffffff, #FFD700 50%, #b8860b 100%) !important;
@@ -183,42 +178,33 @@
         }
 
         @keyframes goldPulseAnim {
-            0% { transform: scale(1); box-shadow: 0 0 12px #FFD700, inset 0 0 6px #FFF; filter: brightness(1); }
-            100% { transform: scale(1.08); box-shadow: 0 0 35px #FFD700, inset 0 0 18px #FFF; filter: brightness(1.4); }
+            0% { transform: scale(1); box-shadow: 0 0 15px #FFD700, inset 0 0 8px #FFF; filter: brightness(1); }
+            100% { transform: scale(1.12); box-shadow: 0 0 40px #FFD700, inset 0 0 22px #FFF; filter: brightness(1.4); }
         }
 
         /* الحروف الخارجية ضخمة وواضحة */
         .balloon-text {
-            font-size: 2.3em;
+            font-size: 2.4em;
             font-weight: 900;
             color: #000000;
             text-shadow: 0 1px 2px rgba(255,255,255,0.9);
             text-align: center;
             line-height: 1;
-            margin: 0;
-            padding: 0;
         }
 
-        /* الكلمة الداخلية عند الكشف ضخمة ومالية البالون تماماً */
+        /* الكلمة الداخلية عند الكشف */
         .inner-word {
-            font-size: 1.35em;
+            font-size: 1.4em;
             font-weight: 900;
             color: #000000;
             text-shadow: 0 1px 2px rgba(255,255,255,0.9);
             text-align: center;
             line-height: 1;
-            margin: 0;
-            padding: 0;
             display: none;
         }
 
-        .balloon.revealed .balloon-text {
-            display: none; 
-        }
-
-        .balloon.revealed .inner-word {
-            display: block; 
-        }
+        .balloon.revealed .balloon-text { display: none; }
+        .balloon.revealed .inner-word { display: block; }
 
         .balloon.popped {
             visibility: hidden;
@@ -263,7 +249,7 @@
 <body>
 
     <div class="game-viewport" id="gameViewport">
-        <!-- لوحات النقاط العلوية بملء العرض -->
+        <!-- لوحات النقاط العلوية -->
         <div class="top-panel-wrapper">
             <div class="side-column" onclick="setGameMode('numbers')">
                 <div class="score-box" id="container1">
@@ -280,7 +266,7 @@
             </div>
         </div>
 
-        <!-- شبكة البالونات تملأ الشاشة تماماً -->
+        <!-- شبكة البالونات -->
         <div class="balloons-grid" id="balloonsGrid"></div>
     </div>
 
@@ -484,6 +470,7 @@
             let centerY = parentRect.height / 2;
 
             cards.forEach((card) => {
+                card.classList.remove('revealed', 'legendary-gold-pulse', 'is-legendary');
                 let rect = card.getBoundingClientRect();
                 let cardCenterX = rect.left - parentRect.left + (rect.width / 2);
                 let cardCenterY = rect.top - parentRect.top + (rect.height / 2);

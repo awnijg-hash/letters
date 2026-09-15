@@ -253,14 +253,6 @@
             letter-spacing: -0.5px;
         }
 
-        .mutawakkil-style {
-            font-size: 1.2em !important;
-            color: #1e1b4b !important;
-            text-shadow: 0 0 6px #FFD700, 0 1px 2px #fff !important;
-            font-weight: 900;
-            -webkit-text-stroke: 0.3px #FFD700;
-        }
-
         .inner-word-grid {
             display: none;
             flex-wrap: wrap;
@@ -349,25 +341,24 @@
         let isRevealed = false; 
 
         const staticNamesPool = [
-            "جولي", "زكا", "شمس", "نادرة", "عبدالله", "ادم", "مؤمن", "نجمة", 
-            "شاوي", "بيجو", "رامي", "الكبيرة", "عطر", "كروس", "شيختهم", "بليز", 
-            "نضال", "بدر", "أس", "اداري", "ملاك", "جنوبية", "صقر", "فهد", "سلطان", "برق"
+            "جولي", "زكا", "شمس", "عبدالله", "ادم", "جنات", "نجمة", 
+            "شاوي", "بيجو", "رامي", "العنزي", "كروس", "شيختهم", "بليز", 
+            "نضال", "بدر", "زينب", "اداري", "ملاك", "جنوبية", "صقر", "مالك", "صقر", "مريم", "ضي"
         ];
 
-        const col0Row4Options = ["أحمد الليبي", "أبو غيث", "هلولة"];
-        const col0Row7Options = ["حيدر", "شويكة"];
+        const col0Row4Options = ["أبوغيثْ يُولدي", "هلولة", "أحمد الليبي"];
+        const col0Row7Options = ["شويكة", "حيدر"];
         let toggleStateRow7 = 0; 
 
-        // تدرج الكلمات والنغمات (بترددات الأكورديون الطربية الصاخبة والعالية)
         const levelWords = [
-            { count: 1, val: 1, note: 261.63, name: "واحد" },     // C4
-            { count: 2, val: 2, note: 293.66, name: "اثنان" },    // D4
-            { count: 3, val: 3, note: 329.63, name: "ثلاثة" },    // E4
-            { count: 4, val: 4, note: 392.00, name: "أربعة" },    // G4
-            { count: 5, val: 5, note: 440.00, name: "خمسة" },    // A4
-            { count: 6, val: 6, note: 523.25, name: "ستة" },     // C5
-            { count: 7, val: 7, note: 587.33, name: "سبعة" },    // D5
-            { count: 8, val: 8, note: 659.25, name: "ثمانية" }    // E5 (أعلى وأقوى نغمة أكورديون للـ 8 نجوم)
+            { count: 1, val: 1, note: 261.63, name: "واحد" },     
+            { count: 2, val: 2, note: 293.66, name: "اثنان" },    
+            { count: 3, val: 3, note: 329.63, name: "ثلاثة" },    
+            { count: 4, val: 4, note: 392.00, name: "أربعة" },    
+            { count: 5, val: 5, note: 440.00, name: "خمسة" },    
+            { count: 6, val: 6, note: 523.25, name: "ستة" },     
+            { count: 7, val: 7, note: 587.33, name: "سبعة" },    
+            { count: 8, val: 8, note: 659.25, name: "ثمانية" }    
         ];
 
         let audioCtx = null;
@@ -385,29 +376,25 @@
             }
         }
 
-        // محاكي صوت الأكورديون العالي والمركب (يعتمد على Sawtooth وموجات متداخلة وصوت عالي الوضوح)
         function playAccordionChord(baseFreq, starCount) {
             try {
                 initAudio();
                 let now = audioCtx.currentTime;
                 
-                // رفع شدة الصوت تدريجياً كل ما زاد عدد النجوم
                 let masterGain = audioCtx.createGain();
                 let volumeMultiplier = Math.min(0.55, 0.25 + (starCount * 0.04)); 
                 masterGain.gain.setValueAtTime(volumeMultiplier, now);
                 masterGain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
                 masterGain.connect(audioCtx.destination);
 
-                // بناء هارمونيك الأكورديون (تردد أساسي + هامش هرموني مع موجات Sawtooth)
                 let freqs = [baseFreq, baseFreq * 1.5, baseFreq * 2];
                 freqs.forEach(f => {
                     let osc = audioCtx.createOscillator();
                     let filter = audioCtx.createBiquadFilter();
                     
-                    osc.type = 'sawtooth'; // يعطي طابع آلة النفخ والأكورديون
+                    osc.type = 'sawtooth';
                     osc.frequency.setValueAtTime(f, now);
 
-                    // فلتر لتنقيع الصوت وإعطائه خشونة الأكورديون المميزة
                     filter.type = 'lowpass';
                     filter.frequency.setValueAtTime(1800, now);
 
@@ -438,12 +425,13 @@
 
                 if (col === 0) {
                     if (row === 0) outerText = "المتوكل";
-                    else if (row === 1) outerText = "خمسوس";
+                    else if (row === 1) outerText = "الكبيرة";
                     else if (row === 2) outerText = "عمليات";
-                    else if (row === 3) outerText = "شمس النهار";
-                    else if (row === 4) outerText = chosenRow4Name;
-                    else if (row === 6) outerText = "نادرة";
-                    else if (row === 7) outerText = chosenRow7Name;
+                    else if (row === 3) outerText = "الزمن";        
+                    else if (row === 4) outerText = chosenRow4Name; 
+                    else if (row === 5) outerText = "شمس النهار";  
+                    else if (row === 6) outerText = "نادرة";        
+                    else if (row === 7) outerText = chosenRow7Name; 
                     else outerText = shuffledStatic[staticIndex++ % shuffledStatic.length];
                 } else {
                     outerText = shuffledStatic[staticIndex++ % shuffledStatic.length];
@@ -512,12 +500,11 @@
                 let isLeg = (item.wordData.val === 8);
                 let balloonStarsHTML = buildBalloonStarsHTML(item.wordData.count);
                 
-                let extraClass = (item.text === "المتوكل") ? "mutawakkil-style" : "";
                 let formattedText = formatBalloonText(item.text);
                 
                 grid.innerHTML += `
                     <div class="balloon ${isLeg ? 'is-legendary' : ''}" id="balloon-${i}" onclick="handleBalloonClick(${i})">
-                        <span class="balloon-text ${extraClass}">${formattedText}</span>
+                        <span class="balloon-text">${formattedText}</span>
                         <div class="inner-word-grid">${balloonStarsHTML}</div>
                     </div>`;
             }
@@ -540,7 +527,6 @@
             if (!gameActive) return;
             let item = balloonsData[index];
 
-            // تشغيل نغمة الأكورديون المتوافقة مع عدد النجوم وحدتها
             playAccordionChord(item.wordData.note, item.wordData.count);
 
             if (gameMode === 'key' && item.isName) {
@@ -601,7 +587,7 @@
                 setTimeout(() => {
                     legendaryBalloonEl.classList.add('revealed', 'legendary-gold-pulse');
                     legendaryBalloonEl.querySelector('.inner-word-grid').innerHTML = buildBalloonStarsHTML(8);
-                    playAccordionChord(880, 8); // نغمة أكورديون أسطورية وعالية جداً
+                    playAccordionChord(880, 8);
                     gameActive = false;
                 }, 400);
             }

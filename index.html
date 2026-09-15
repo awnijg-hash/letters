@@ -12,7 +12,6 @@
             width: 100vw;
             height: 100vh;
             height: 100dvh;
-            /* خلفية فاتحة بالوسط وأطراف غامقة بدون أي تأثير عام على الصفحة */
             background: radial-gradient(circle at center, #38bdf8 0%, #0284c7 40%, #0369a1 70%, #0f172a 100%);
             font-family: 'Arial Black', sans-serif;
             overflow: hidden;
@@ -20,7 +19,6 @@
             position: fixed;
         }
 
-        /* طبقة خاصة بالخلفية فقط لتعمل موجة أزرق غامق متحركة كل 10 ثواني بدون التأثير على الكرات */
         body::before {
             content: '';
             position: absolute;
@@ -37,7 +35,7 @@
 
         @keyframes darkWaveEffect {
             0% { transform: scale(0.5); opacity: 0; }
-            50% { transform: scale(1.2); opacity: 0.85; } /* موجة أزرق غامق تظهر وتتحرك بالخلفية */
+            50% { transform: scale(1.2); opacity: 0.85; }
             100% { transform: scale(1.8); opacity: 0; }
         }
 
@@ -53,7 +51,6 @@
             position: relative;
         }
 
-        /* زر ملء الشاشة السريع والشفاف بأعلى الزاوية */
         .fs-btn {
             position: absolute;
             top: 2px;
@@ -69,7 +66,6 @@
             z-index: 100;
         }
 
-        /* لوحات النقاط العلوية */
         .top-panel-wrapper {
             display: flex;
             align-items: stretch;
@@ -78,12 +74,14 @@
             gap: 4px;
             flex: 0 0 auto;
             margin-top: 18px;
+            min-width: 0;
         }
 
         .side-column {
             display: flex;
             flex-direction: column;
-            flex: 1;
+            flex: 2;
+            min-width: 0;
             gap: 2px;
             cursor: pointer;
         }
@@ -91,68 +89,86 @@
         .score-box {
             flex: 1;
             width: 100%;
-            min-height: 55px;
-            background: rgba(255, 255, 255, 0.4);
-            border: 1px solid rgba(2, 132, 199, 0.5);
-            border-radius: 8px;
+            min-width: 0;
+            min-height: 95px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 2px solid rgba(2, 132, 199, 0.8);
+            border-radius: 10px;
             display: flex;
             justify-content: flex-start;
             align-items: center;
-            padding: 0 6px;
-            gap: 4px;
-            overflow-x: auto;
+            padding: 6px;
+            overflow: hidden;
             transition: all 0.3s;
         }
 
-        .score-box.winner-blink {
-            animation: scoreBlink 0.6s infinite alternate;
-            border-radius: 8px;
-            background: rgba(0, 255, 204, 0.4);
+        .score-box.winner-gold-border {
+            border: 4px solid #FFD700 !important;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.9);
+            animation: redPulseBg 1.2s infinite alternate ease-in-out;
         }
 
-        @keyframes scoreBlink {
-            0% { box-shadow: 0 0 5px #00ffcc, inset 0 0 5px #00ffcc; filter: brightness(1); }
-            100% { box-shadow: 0 0 25px #00ffcc, inset 0 0 15px #00ffcc; filter: brightness(1.2); }
+        @keyframes redPulseBg {
+            0% { background: rgba(239, 68, 68, 0.4); }
+            100% { background: rgba(239, 68, 68, 0.85); }
         }
 
-        /* زر أهلاً وسهلاً */
-        .welcome-badge {
+        .center-art-box {
             display: flex;
             justify-content: center;
             align-items: center;
-            background: rgba(255, 255, 255, 0.6);
-            border: 2px solid #0369a1;
-            border-radius: 50%;
-            width: 48px;
-            height: 48px;
-            font-size: 0.45em;
-            font-weight: 900;
-            color: #0369a1;
-            text-align: center;
-            line-height: 1.1;
-            flex-shrink: 0;
+            flex: 0 1 50px;
+            min-height: 95px;
+            background: linear-gradient(135deg, #000084, #008080, #800080, #000084);
+            background-size: 400% 400%;
+            border: 3px solid #FFD700;
+            border-radius: 8px;
+            box-shadow: 0 0 12px rgba(255, 215, 0, 0.7), inset 2px 2px 0px rgba(255,255,255,0.4), inset -2px -2px 0px rgba(0,0,0,0.6);
+            animation: win98GradientShift 10s ease infinite, boxGlow 2s infinite alternate;
             cursor: pointer;
-            box-shadow: 0 0 10px rgba(3, 105, 161, 0.3);
-            transition: transform 0.1s;
+            transition: flex 0.2s ease;
         }
 
-        .welcome-badge:active {
-            transform: scale(0.92);
+        @keyframes win98GradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        .transferred-word-badge {
-            padding: 3px 6px;
-            border-radius: 5px;
-            font-weight: 900;
-            font-size: 0.9em;
-            color: #000;
-            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+        @keyframes boxGlow {
+            0% { box-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
+            100% { box-shadow: 0 0 18px rgba(255, 215, 0, 0.8); }
+        }
+
+        .center-art-box:active {
+            transform: scale(0.95);
+        }
+
+        .stars-egg-carton {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            gap: 4px;
+            width: 100%;
+            height: 100%;
+            padding: 4px;
+            direction: rtl;
+        }
+
+        .star-row {
+            display: flex;
+            flex-direction: row;
+            gap: 6px;
             animation: popIn 0.3s ease;
-            border: 1px solid rgba(0,0,0,0.2);
-            white-space: nowrap;
+        }
+
+        .score-star-item {
+            font-size: 1.15em;
+            line-height: 1;
+            color: #FFD700;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.9), 0 0 1px #ff0000;
+            -webkit-text-stroke: 0.6px #ff0000;
         }
 
         @keyframes popIn {
@@ -161,77 +177,11 @@
             100% { transform: scale(1); }
         }
 
-        /* عمود التقييمات الصافي بوسط الشاشة */
-        .center-legend-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            height: 100dvh;
-            background: rgba(15, 23, 42, 0.95);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            z-index: 9999;
-            cursor: pointer;
-            padding: 20px;
-        }
-
-        .center-legend-container {
-            width: 100%;
-            max-width: 340px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            position: relative;
-            overflow: hidden;
-            border-radius: 12px;
-            border: 2px solid #FFD700;
-            padding: 10px;
-            background: #111;
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.4);
-        }
-
-        .center-legend-container::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(0deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            animation: sweepLight 4s ease-in-out infinite alternate;
-            pointer-events: none;
-        }
-
-        @keyframes sweepLight {
-            0% { transform: translateY(-35%); }
-            100% { transform: translateY(35%); }
-        }
-
-        .center-legend-item {
-            padding: 10px 15px;
-            border-radius: 6px;
-            font-weight: 900;
-            font-size: 1.2em;
-            text-align: center;
-            color: #fff;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-            border: 1px solid rgba(255,255,255,0.3);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* شبكة البالونات */
         .balloons-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(8, 1fr);
-            gap: 3px;
+            gap: 4px;
             width: 100%;
             flex: 1;
             margin: 4px 0;
@@ -275,57 +225,74 @@
         }
 
         .balloon.legendary-gold-pulse, .balloon.revealed.is-legendary {
-            animation: goldPulseAnim 0.5s infinite alternate !important;
+            animation: goldPulseAnim 0.8s infinite alternate !important;
             background: radial-gradient(circle at 35% 30%, #ffffff, #FFD700 50%, #b8860b 100%) !important;
             border: 2px solid #FFF;
         }
 
         @keyframes goldPulseAnim {
-            0% { transform: scale(1); box-shadow: 0 0 15px #FFD700, inset 0 0 8px #FFF; filter: brightness(1); }
-            100% { transform: scale(1.12); box-shadow: 0 0 40px #FFD700, inset 0 0 22px #FFF; filter: brightness(1.4); }
+            0% { transform: scale(1); box-shadow: 0 0 20px #FFD700, inset 0 0 10px #FFF; filter: brightness(1) drop-shadow(0 0 5px #FFD700); }
+            100% { transform: scale(1.15); box-shadow: 0 0 45px #FFD700, inset 0 0 25px #FFF; filter: brightness(1.4) drop-shadow(0 0 15px #FFD700); }
         }
 
         .balloon-text {
-            font-size: 2.3em;
+            font-size: 1.05em;
             font-weight: 900;
             color: #000000;
-            text-shadow: 0 1px 2px rgba(255,255,255,0.9);
+            text-shadow: 0 1px 3px rgba(255,255,255,0.9), 0 0 2px rgba(0,0,0,0.5);
             text-align: center;
             line-height: 1;
+            position: relative;
+            z-index: 3;
+            width: 100%;
+            padding: 0 1px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: -0.5px;
         }
 
-        .inner-word {
-            font-size: 1.35em;
+        .mutawakkil-style {
+            font-size: 1.2em !important;
+            color: #1e1b4b !important;
+            text-shadow: 0 0 6px #FFD700, 0 1px 2px #fff !important;
             font-weight: 900;
-            color: #000000;
-            text-shadow: 0 1px 2px rgba(255,255,255,0.9);
-            text-align: center;
-            line-height: 1;
+            -webkit-text-stroke: 0.3px #FFD700;
+        }
+
+        .inner-word-grid {
             display: none;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 1px;
+            position: absolute;
+            z-index: 4;
+            width: 85%;
+            height: 85%;
+        }
+
+        .balloon-star-item {
+            font-size: 0.95em;
+            line-height: 1;
+            color: #FFD700;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.9);
+            -webkit-text-stroke: 0.5px #ff0000;
         }
 
         .balloon.revealed .balloon-text { display: none; }
-        .balloon.revealed .inner-word { display: block; }
-
-        .balloon.popped {
-            visibility: hidden;
-            opacity: 0;
-            pointer-events: none;
-            animation: none;
-            transform: scale(0);
-            transition: all 0.2s ease;
+        .balloon.revealed .inner-word-grid { display: flex; }
+        .balloon.revealed {
+            background: rgba(15, 23, 42, 0.4) !important;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
         }
 
         .flying-word {
             position: fixed;
-            font-size: 1.2em;
-            font-weight: 900;
-            color: #fff;
-            padding: 4px 8px;
-            border-radius: 6px;
+            font-size: 1.1em;
             z-index: 999;
             pointer-events: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.8);
             animation: flyToScore 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
 
@@ -352,39 +319,23 @@
     <div class="game-viewport" id="gameViewport">
         <button class="fs-btn" onclick="toggleFullScreen()">⛶ ملء الشاشة</button>
 
-        <!-- لوحات النقاط العلوية -->
         <div class="top-panel-wrapper">
-            <div class="side-column" onclick="playHarmonicTone(400); setGameMode('numbers')">
+            <div class="side-column" onclick="playAccordionChord(523.25, 3); setGameMode('numbers')">
                 <div class="score-box" id="container1">
-                    <div id="side1Badges" style="display:flex; gap:2px; flex-wrap:wrap; align-items:center;"></div>
+                    <div id="side1Badges" class="stars-egg-carton"></div>
                 </div>
             </div>
 
-            <div class="welcome-badge" onclick="playHarmonicTone(500); toggleRevealAndMix()" title="كشف / تغطية وخلط">أهلاً<br>وسهلاً</div>
+            <div class="center-art-box" onclick="playAccordionChord(659.25, 5); toggleRevealAndMix()" title="كشف / تغطية وخلط"></div>
 
-            <div class="side-column" onclick="playHarmonicTone(400); triggerKeyGameWithMix()">
-                <div class="score-box" id="container2" style="justify-content:flex-end;">
-                    <div id="side2Badges" style="display:flex; gap:2px; flex-wrap:wrap; align-items:center; flex-direction:row-reverse;"></div>
+            <div class="side-column" onclick="playAccordionChord(523.25, 3); triggerKeyGameWithMix()">
+                <div class="score-box" id="container2">
+                    <div id="side2Badges" class="stars-egg-carton"></div>
                 </div>
             </div>
         </div>
 
-        <!-- شبكة البالونات -->
         <div class="balloons-grid" id="balloonsGrid"></div>
-
-        <!-- عمود التقييمات الصافي بوسط الشاشة -->
-        <div id="centerLegend" class="center-legend-overlay" style="display: none;" onclick="closeLegendAndStartGame()">
-            <div class="center-legend-container">
-                <div class="center-legend-item" style="background:#FFD700; color:#000;"><span>8 - أسطوري</span><span>⭐</span></div>
-                <div class="center-legend-item" style="background:#1abc9c;"><span>7 - مبدع</span><span>⭐</span></div>
-                <div class="center-legend-item" style="background:#2ecc71;"><span>6 - رائع</span><span>⭐</span></div>
-                <div class="center-legend-item" style="background:#9b59b6;"><span>5 - ممتاز</span><span>⭐</span></div>
-                <div class="center-legend-item" style="background:#3498db;"><span>4 - جيد جداً</span><span>⭐</span></div>
-                <div class="center-legend-item" style="background:#f1c40f; color:#000;"><span>3 - جيد</span><span>⭐</span></div>
-                <div class="center-legend-item" style="background:#e67e22;"><span>2 - مقبول</span><span>⭐</span></div>
-                <div class="center-legend-item" style="background:#e74c3c;"><span>1 - ضعيف</span><span>⭐</span></div>
-            </div>
-        </div>
     </div>
 
     <script>
@@ -397,18 +348,26 @@
         let currentTurnSide = 1; 
         let isRevealed = false; 
 
-        const arabicNames = ["أحمد", "علي", "عمر", "زيد", "خالد", "بكر", "حمزة", "صالح"];
-        const alphabet = "ABDEFGHIJKLMNOPQRSTUVWXYZ".split('');
+        const staticNamesPool = [
+            "جولي", "زكا", "شمس", "نادرة", "عبدالله", "ادم", "مؤمن", "نجمة", 
+            "شاوي", "بيجو", "رامي", "الكبيرة", "عطر", "كروس", "شيختهم", "بليز", 
+            "نضال", "بدر", "أس", "اداري", "ملاك", "جنوبية", "صقر", "فهد", "سلطان", "برق"
+        ];
 
+        const col0Row4Options = ["أحمد الليبي", "أبو غيث", "هلولة"];
+        const col0Row7Options = ["حيدر", "شويكة"];
+        let toggleStateRow7 = 0; 
+
+        // تدرج الكلمات والنغمات (بترددات الأكورديون الطربية الصاخبة والعالية)
         const levelWords = [
-            { text: "ضعيف", val: 1, color: "#e74c3c", note: 300 },
-            { text: "مقبول", val: 2, color: "#e67e22", note: 400 },
-            { text: "جيد", val: 3, color: "#f1c40f", note: 500 },
-            { text: "جيد جداً", val: 4, color: "#3498db", note: 600 },
-            { text: "ممتاز", val: 5, color: "#9b59b6", note: 700 },
-            { text: "رائع", val: 6, color: "#2ecc71", note: 800 },
-            { text: "مبدع", val: 7, color: "#1abc9c", note: 1000 },
-            { text: "أسطوري", val: 8, color: "#FFD700", note: 1320 }
+            { count: 1, val: 1, note: 261.63, name: "واحد" },     // C4
+            { count: 2, val: 2, note: 293.66, name: "اثنان" },    // D4
+            { count: 3, val: 3, note: 329.63, name: "ثلاثة" },    // E4
+            { count: 4, val: 4, note: 392.00, name: "أربعة" },    // G4
+            { count: 5, val: 5, note: 440.00, name: "خمسة" },    // A4
+            { count: 6, val: 6, note: 523.25, name: "ستة" },     // C5
+            { count: 7, val: 7, note: 587.33, name: "سبعة" },    // D5
+            { count: 8, val: 8, note: 659.25, name: "ثمانية" }    // E5 (أعلى وأقوى نغمة أكورديون للـ 8 نجوم)
         ];
 
         let audioCtx = null;
@@ -426,45 +385,37 @@
             }
         }
 
-        function playHarmonicTone(freq) {
+        // محاكي صوت الأكورديون العالي والمركب (يعتمد على Sawtooth وموجات متداخلة وصوت عالي الوضوح)
+        function playAccordionChord(baseFreq, starCount) {
             try {
                 initAudio();
                 let now = audioCtx.currentTime;
                 
-                let bufferSize = audioCtx.sampleRate * 0.12;
-                let buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-                let data = buffer.getChannelData(0);
-                for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.5;
+                // رفع شدة الصوت تدريجياً كل ما زاد عدد النجوم
+                let masterGain = audioCtx.createGain();
+                let volumeMultiplier = Math.min(0.55, 0.25 + (starCount * 0.04)); 
+                masterGain.gain.setValueAtTime(volumeMultiplier, now);
+                masterGain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+                masterGain.connect(audioCtx.destination);
 
-                let noise = audioCtx.createBufferSource();
-                noise.buffer = buffer;
-                let filter = audioCtx.createBiquadFilter();
-                filter.type = 'bandpass';
-                filter.frequency.setValueAtTime(500, now);
-
-                let gain1 = audioCtx.createGain();
-                gain1.gain.setValueAtTime(0.3, now);
-                gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
-
-                noise.connect(filter);
-                filter.connect(gain1);
-                gain1.connect(audioCtx.destination);
-                noise.start(now);
-                noise.stop(now + 0.12);
-
-                [freq, freq * 1.25, freq * 1.5].forEach((f, idx) => {
+                // بناء هارمونيك الأكورديون (تردد أساسي + هامش هرموني مع موجات Sawtooth)
+                let freqs = [baseFreq, baseFreq * 1.5, baseFreq * 2];
+                freqs.forEach(f => {
                     let osc = audioCtx.createOscillator();
-                    let gain2 = audioCtx.createGain();
-                    osc.type = idx === 0 ? 'triangle' : 'sine';
-                    osc.frequency.setValueAtTime(f, now + 0.04);
-                    gain2.gain.setValueAtTime(0, now + 0.04);
-                    gain2.gain.linearRampToValueAtTime(0.25, now + 0.08);
-                    gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+                    let filter = audioCtx.createBiquadFilter();
+                    
+                    osc.type = 'sawtooth'; // يعطي طابع آلة النفخ والأكورديون
+                    osc.frequency.setValueAtTime(f, now);
 
-                    osc.connect(gain2);
-                    gain2.connect(audioCtx.destination);
-                    osc.start(now + 0.04);
-                    osc.stop(now + 0.5);
+                    // فلتر لتنقيع الصوت وإعطائه خشونة الأكورديون المميزة
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(1800, now);
+
+                    osc.connect(filter);
+                    filter.connect(masterGain);
+
+                    osc.start(now);
+                    osc.stop(now + 0.6);
                 });
             } catch (e) {}
         }
@@ -472,12 +423,31 @@
         function generateBalloonsData() {
             let pool = [];
             let legendaryIndex = Math.floor(Math.random() * 32);
-            let alphabetIndex = 0;
+            let shuffledStatic = [...staticNamesPool].sort(() => Math.random() - 0.5);
+            let staticIndex = 0;
+
+            let chosenRow7Name = col0Row7Options[toggleStateRow7 % col0Row7Options.length];
+            toggleStateRow7++;
+
+            let chosenRow4Name = col0Row4Options[Math.floor(Math.random() * col0Row4Options.length)];
 
             for (let i = 0; i < 32; i++) {
-                let col = i % 4;
+                let col = i % 4; 
                 let row = Math.floor(i / 4);
-                let outerText = (col === 0) ? arabicNames[row] : alphabet[alphabetIndex++ % alphabet.length];
+                let outerText = "";
+
+                if (col === 0) {
+                    if (row === 0) outerText = "المتوكل";
+                    else if (row === 1) outerText = "خمسوس";
+                    else if (row === 2) outerText = "عمليات";
+                    else if (row === 3) outerText = "شمس النهار";
+                    else if (row === 4) outerText = chosenRow4Name;
+                    else if (row === 6) outerText = "نادرة";
+                    else if (row === 7) outerText = chosenRow7Name;
+                    else outerText = shuffledStatic[staticIndex++ % shuffledStatic.length];
+                } else {
+                    outerText = shuffledStatic[staticIndex++ % shuffledStatic.length];
+                }
 
                 let wordObj;
                 if (i === legendaryIndex) {
@@ -489,12 +459,46 @@
                 pool.push({
                     id: i,
                     text: outerText,
-                    isName: (col === 0),
+                    isName: true,
                     rowIndex: row,
                     wordData: wordObj
                 });
             }
             return pool;
+        }
+
+        function buildEggCartonScoreHTML(starsList) {
+            let html = '';
+            let currentRow = [];
+            
+            starsList.forEach((star, index) => {
+                currentRow.push(star);
+                if (currentRow.length === 5 || index === starsList.length - 1) {
+                    html += `<div class="star-row">`;
+                    currentRow.forEach(() => {
+                        html += `<span class="score-star-item">⭐</span>`;
+                    });
+                    html += `</div>`;
+                    currentRow = [];
+                }
+            });
+            return html;
+        }
+
+        function buildBalloonStarsHTML(count) {
+            let html = '';
+            for (let s = 0; s < count; s++) {
+                html += `<span class="balloon-star-item">⭐</span>`;
+            }
+            return html;
+        }
+
+        function formatBalloonText(text) {
+            if (text.includes(" ")) {
+                let parts = text.split(" ");
+                return `<span>${parts[0]}</span><span>${parts.slice(1).join(" ")}</span>`;
+            }
+            return `<span>${text}</span>`;
         }
 
         function renderBalloons() {
@@ -506,16 +510,21 @@
             for (let i = 0; i < 32; i++) {
                 let item = balloonsData[i];
                 let isLeg = (item.wordData.val === 8);
+                let balloonStarsHTML = buildBalloonStarsHTML(item.wordData.count);
+                
+                let extraClass = (item.text === "المتوكل") ? "mutawakkil-style" : "";
+                let formattedText = formatBalloonText(item.text);
+                
                 grid.innerHTML += `
                     <div class="balloon ${isLeg ? 'is-legendary' : ''}" id="balloon-${i}" onclick="handleBalloonClick(${i})">
-                        <span class="balloon-text">${item.text}</span>
-                        <span class="inner-word">${item.wordData.text}</span>
+                        <span class="balloon-text ${extraClass}">${formattedText}</span>
+                        <div class="inner-word-grid">${balloonStarsHTML}</div>
                     </div>`;
             }
         }
 
         function toggleRevealAndMix() {
-            playHarmonicTone(600);
+            playAccordionChord(587.33, 5);
             let cards = document.querySelectorAll('.balloon');
             if (!isRevealed) {
                 isRevealed = true;
@@ -528,31 +537,40 @@
         }
 
         function handleBalloonClick(index) {
-            playHarmonicTone(700);
             if (!gameActive) return;
             let item = balloonsData[index];
+
+            // تشغيل نغمة الأكورديون المتوافقة مع عدد النجوم وحدتها
+            playAccordionChord(item.wordData.note, item.wordData.count);
 
             if (gameMode === 'key' && item.isName) {
                 openRowGradually(item.rowIndex);
             } else if (gameMode === 'numbers') {
                 let balloonEl = document.getElementById(`balloon-${index}`);
-                if (balloonEl.classList.contains('popped')) return;
+                if (balloonEl.classList.contains('revealed')) return;
 
-                balloonEl.classList.add('popped');
-                playHarmonicTone(item.wordData.note);
-                createStarBurst(balloonEl, item.wordData.color);
-                animateFlyingWord(balloonEl, item.wordData);
+                let textSpan = balloonEl.querySelector('.balloon-text');
+                textSpan.className = "balloon-text"; 
+                textSpan.innerHTML = `<span>${item.wordData.name}</span>`;
+                textSpan.style.fontSize = '1.1em';
+                textSpan.style.color = '#FFD700';
 
-                if (currentTurnSide === 1) {
-                    selectionsSide1.push(item.wordData);
-                    if (selectionsSide1.length >= mode && selectionsSide2.length < mode) {
-                        currentTurnSide = 2;
+                setTimeout(() => {
+                    balloonEl.classList.add('revealed');
+                    createStarBurst(balloonEl, '#FFD700');
+                    animateFlyingWord(balloonEl, item.wordData);
+
+                    if (currentTurnSide === 1) {
+                        selectionsSide1.push(item.wordData);
+                        if (selectionsSide1.length >= mode && selectionsSide2.length < mode) {
+                            currentTurnSide = 2;
+                        }
+                    } else {
+                        selectionsSide2.push(item.wordData);
                     }
-                } else {
-                    selectionsSide2.push(item.wordData);
-                }
 
-                updateScoresDisplay();
+                    updateScoresDisplay();
+                }, 250);
             }
         }
 
@@ -564,7 +582,7 @@
             for (let i = 0; i < 4; i++) {
                 let balloonIdx = startIndex + i;
                 let balloonEl = document.getElementById(`balloon-${balloonIdx}`);
-                if (balloonEl && !balloonEl.classList.contains('popped')) {
+                if (balloonEl && !balloonEl.classList.contains('revealed')) {
                     let wordData = balloonsData[balloonIdx].wordData;
                     
                     if (wordData.val === 8) {
@@ -573,8 +591,7 @@
                         break;
                     } else {
                         setTimeout(() => {
-                            balloonEl.classList.add('popped');
-                            playHarmonicTone(wordData.note);
+                            balloonEl.classList.add('revealed');
                         }, i * 200);
                     }
                 }
@@ -582,17 +599,16 @@
 
             if (rowHasLegendary && legendaryBalloonEl) {
                 setTimeout(() => {
-                    legendaryBalloonEl.classList.remove('popped');
-                    legendaryBalloonEl.classList.add('legendary-gold-pulse');
-                    legendaryBalloonEl.innerHTML = '<span class="balloon-text" style="color:#000000; text-shadow:0 0 4px #FFF;">أسطوري</span>';
-                    playHarmonicTone(1320);
+                    legendaryBalloonEl.classList.add('revealed', 'legendary-gold-pulse');
+                    legendaryBalloonEl.querySelector('.inner-word-grid').innerHTML = buildBalloonStarsHTML(8);
+                    playAccordionChord(880, 8); // نغمة أكورديون أسطورية وعالية جداً
                     gameActive = false;
                 }, 400);
             }
         }
 
         function triggerMixAnimation(afterMixCallback) {
-            playHarmonicTone(550);
+            playAccordionChord(493.88, 4);
             let cards = document.querySelectorAll('.balloon');
             let parentRect = document.getElementById('gameViewport').getBoundingClientRect();
             let centerX = parentRect.width / 2;
@@ -615,15 +631,8 @@
             setTimeout(() => {
                 if (afterMixCallback) afterMixCallback();
                 cards.forEach(card => card.classList.remove('mixing-anim'));
-                
-                document.getElementById('centerLegend').style.display = 'flex';
-                playHarmonicTone(900);
+                playAccordionChord(659.25, 6);
             }, 2000);
-        }
-
-        function closeLegendAndStartGame() {
-            playHarmonicTone(800);
-            document.getElementById('centerLegend').style.display = 'none';
         }
 
         function triggerKeyGameWithMix() {
@@ -668,13 +677,14 @@
 
             let flyer = document.createElement('div');
             flyer.className = 'flying-word';
-            flyer.innerText = wordData.text;
-            flyer.style.background = wordData.color;
+            let tempHTML = '';
+            for(let s=0; s<wordData.count; s++) tempHTML += '⭐';
+            flyer.innerHTML = tempHTML;
             flyer.style.left = `${rect.left}px`;
             flyer.style.top = `${rect.top}px`;
 
             let destX = targetRect.left + 20 - rect.left;
-            let destY = targetRect.top + 10 - rect.top;
+            let destY = targetRect.top + 20 - rect.top;
             flyer.style.setProperty('--destX', `${destX}px`);
             flyer.style.setProperty('--destY', `${destY}px`);
 
@@ -685,31 +695,32 @@
         function updateScoresDisplay() {
             if (gameMode === 'key') return;
 
-            let badges1 = '', badges2 = '';
+            let starsList1 = [];
+            let starsList2 = [];
             let sum1 = 0, sum2 = 0;
 
             selectionsSide1.forEach((word) => {
                 sum1 += word.val;
-                badges1 += `<span class="transferred-word-badge" style="background:${word.color};">${word.text}</span>`;
+                for(let i=0; i<word.count; i++) starsList1.push('⭐');
             });
             selectionsSide2.forEach((word) => {
                 sum2 += word.val;
-                badges2 += `<span class="transferred-word-badge" style="background:${word.color};">${word.text}</span>`;
+                for(let i=0; i<word.count; i++) starsList2.push('⭐');
             });
 
-            document.getElementById('side1Badges').innerHTML = badges1;
-            document.getElementById('side2Badges').innerHTML = badges2;
+            document.getElementById('side1Badges').innerHTML = buildEggCartonScoreHTML(starsList1);
+            document.getElementById('side2Badges').innerHTML = buildEggCartonScoreHTML(starsList2);
 
             let box1 = document.getElementById('container1');
             let box2 = document.getElementById('container2');
-            box1.classList.remove('winner-blink');
-            box2.classList.remove('winner-blink');
+            box1.classList.remove('winner-gold-border');
+            box2.classList.remove('winner-gold-border');
 
             if (selectionsSide1.length > 0 || selectionsSide2.length > 0) {
                 if (sum1 > sum2) {
-                    box1.classList.add('winner-blink');
+                    box1.classList.add('winner-gold-border');
                 } else if (sum2 > sum1) {
-                    box2.classList.add('winner-blink');
+                    box2.classList.add('winner-gold-border');
                 }
             }
         }
@@ -721,8 +732,8 @@
             currentTurnSide = 1;
             document.getElementById('side1Badges').innerHTML = '';
             document.getElementById('side2Badges').innerHTML = '';
-            document.getElementById('container1').classList.remove('winner-blink');
-            document.getElementById('container2').classList.remove('winner-blink');
+            document.getElementById('container1').classList.remove('winner-gold-border');
+            document.getElementById('container2').classList.remove('winner-gold-border');
             renderBalloons();
         }
 

@@ -243,6 +243,16 @@
             background: radial-gradient(circle at 35% 30%, #fffdf0, #e1b12c 50%, #7158e2 100%);
         }
 
+        .balloon.col-zero {
+            background: radial-gradient(circle at 35% 30%, #4ade80, #15803d 60%, #064e3b 100%) !important;
+            box-shadow: inset -1px -1px 4px rgba(0,0,0,0.7), 0 0 8px rgba(34, 197, 94, 0.6);
+        }
+
+        .balloon.col-zero .balloon-text {
+            color: #ffffff !important;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,0.8);
+        }
+
         @keyframes floatBalloon {
             0% { transform: translateY(0px) rotate(-1deg); }
             100% { transform: translateY(-2px) rotate(1deg); }
@@ -270,7 +280,6 @@
             100% { transform: scale(1.18); box-shadow: 0 0 50px #FFD700, inset 0 0 25px #FFF; filter: brightness(1.5); }
         }
 
-        /* تحجيم ديناميكي ذكي يملأ المساحة لأقصى حد ممكن */
         .balloon-text {
             position: relative;
             z-index: 3;
@@ -394,20 +403,17 @@
         let currentTurnSide = 1; 
         let isRevealed = false; 
 
+        // أسماء السطور الأبجدية (تم استبدال ثنيان بـ صابر في سطر الثاء)
         const alphabeticalRowsNames = [
-            ["أدم", "أحمد", "أمير"],       
-            ["بدر", "بيان", "باسم"],       
-            ["تامر", "تركي", "تالا"],      
-            ["ثامر", "ثريا", "ثابت"],      
-            ["جولي", "جمانة", "جابر"],     
-            ["حلا", "حسن", "حاتم"],        
-            ["خالد", "خولة", "خضر"],      
-            ["داود", "ديمة", "دانا"]       
+            ["أَسعد", "أدم", "أحمد", "أمير"],       // سطر 0: حرف الألف
+            ["بهاء", "بدر", "بيان", "باسم"],       // سطر 1: حرف الباء
+            ["تيسير", "تامر", "تركي", "تالا"],      // سطر 2: حرف التاء
+            ["صابر", "ثامر", "ثريا", "ثابت"],      // سطر 3: حرف الثاء (تم تبديله بصابر)
+            ["جمال", "جولي", "جمانة", "جابر"],     // سطر 4: حرف الجيم
+            ["حسام", "حلا", "حسن", "حاتم"],        // سطر 5: حرف الحاء
+            ["خالد", "خولة", "خضر", "خالدة"],     // سطر 6: حرف الخاء
+            ["داود", "ديمة", "دانا", "دريد"]       // سطر 7: حرف الدال
         ];
-
-        const col0Row4Options = ["أبوغيثْ يُولدي", "هلولة", "أحمد الليبي"];
-        const col0Row7Options = ["شويكة", "حيدر"];
-        let toggleStateRow7 = 0; 
 
         const levelWords = [
             { count: 1, val: 1, note: 261.63, name: "واحد" },     
@@ -470,30 +476,12 @@
             let pool = [];
             let legendaryIndex = Math.floor(Math.random() * 32);
 
-            let chosenRow7Name = col0Row7Options[toggleStateRow7 % col0Row7Options.length];
-            toggleStateRow7++;
-
-            let chosenRow4Name = col0Row4Options[Math.floor(Math.random() * col0Row4Options.length)];
-
             for (let row = 0; row < 8; row++) {
                 let rowNamesPool = [...alphabeticalRowsNames[row]].sort(() => Math.random() - 0.5);
 
                 for (let col = 0; col < 4; col++) {
                     let i = (row * 4) + col;
-                    let outerText = "";
-
-                    if (col === 0) {
-                        if (row === 0) outerText = "المتوكل";
-                        else if (row === 1) outerText = "الكبيرة";
-                        else if (row === 2) outerText = "عمليات";
-                        else if (row === 3) outerText = "الزمن";        
-                        else if (row === 4) outerText = chosenRow4Name; 
-                        else if (row === 5) outerText = "شمس النهار";  
-                        else if (row === 6) outerText = "نادرة";        
-                        else if (row === 7) outerText = chosenRow7Name; 
-                    } else {
-                        outerText = rowNamesPool[col - 1];
-                    }
+                    let outerText = rowNamesPool[col];
 
                     let wordObj;
                     if (i === legendaryIndex) {
@@ -507,6 +495,7 @@
                         text: outerText,
                         isName: true,
                         rowIndex: row,
+                        colIndex: col, 
                         wordData: wordObj
                     });
                 }
@@ -560,12 +549,17 @@
             for (let i = 0; i < 32; i++) {
                 let item = balloonsData[i];
                 let isLeg = (item.wordData.val === 8);
+                let isColZero = (item.colIndex === 0); 
                 let balloonStarsHTML = buildBalloonStarsHTML(item.wordData.count, isLeg);
                 
                 let formattedText = formatBalloonText(item.text);
                 
+                let classList = "balloon";
+                if (isLeg) classList += " is-legendary";
+                if (isColZero) classList += " col-zero"; 
+
                 grid.innerHTML += `
-                    <div class="balloon ${isLeg ? 'is-legendary' : ''}" id="balloon-${i}" onclick="handleBalloonClick(${i})">
+                    <div class="${classList}" id="balloon-${i}" onclick="handleBalloonClick(${i})">
                         <span class="balloon-text">${formattedText}</span>
                         <div class="inner-word-grid">${balloonStarsHTML}</div>
                     </div>`;

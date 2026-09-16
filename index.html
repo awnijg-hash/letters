@@ -269,6 +269,7 @@
             100% { transform: translate(0, 0) scale(1) rotate(1080deg); z-index: 1; }
         }
 
+        /* التوهج الأصلي الكامل للبالون الذهبي */
         .balloon.legendary-gold-pulse, .balloon.revealed.is-legendary {
             animation: giantStarGlow 0.8s infinite alternate !important;
             background: radial-gradient(circle at center, #ffffff 0%, #FFD700 40%, #b8860b 100%) !important;
@@ -295,7 +296,7 @@
             text-shadow: 0 1px 3px rgba(255,255,255,0.95), 0 0 2px rgba(0,0,0,0.6);
             line-height: 0.95;
             letter-spacing: -0.5px;
-            font-size: clamp(10px, 3.2vw, 17px);
+            font-size: clamp(16px, 4.5vw, 26px);
         }
 
         .inner-word-grid {
@@ -310,15 +311,18 @@
             height: 95%;
         }
 
+        /* النجمة الكبيرة نفسها عليها حدود حمراء بارزة لتبرز وسط التوهج الذهبي */
         .giant-star-display {
-            font-size: 2.2em;
-            filter: drop-shadow(0 0 10px #FFD700);
-            animation: pulseStarIcon 1s infinite alternate ease-in-out;
+            font-size: 2.3em;
+            color: #FFD700;
+            text-shadow: 0 0 6px #ef4444, 0 0 12px #ef4444, 0 0 18px #ef4444;
+            -webkit-text-stroke: 2px #ef4444;
+            animation: pulseStarIcon 0.8s infinite alternate ease-in-out;
         }
 
         @keyframes pulseStarIcon {
             0% { transform: scale(0.9); }
-            100% { transform: scale(1.18); }
+            100% { transform: scale(1.2); }
         }
 
         .balloon-star-item {
@@ -402,17 +406,17 @@
         let gameActive = true;
         let currentTurnSide = 1; 
         let isRevealed = false; 
+        let isTieBreaker = false; 
 
-        // أسماء السطور الأبجدية (تم استبدال ثنيان بـ صابر في سطر الثاء)
         const alphabeticalRowsNames = [
-            ["أَسعد", "أدم", "أحمد", "أمير"],       // سطر 0: حرف الألف
-            ["بهاء", "بدر", "بيان", "باسم"],       // سطر 1: حرف الباء
-            ["تيسير", "تامر", "تركي", "تالا"],      // سطر 2: حرف التاء
-            ["صابر", "ثامر", "ثريا", "ثابت"],      // سطر 3: حرف الثاء (تم تبديله بصابر)
-            ["جمال", "جولي", "جمانة", "جابر"],     // سطر 4: حرف الجيم
-            ["حسام", "حلا", "حسن", "حاتم"],        // سطر 5: حرف الحاء
-            ["خالد", "خولة", "خضر", "خالدة"],     // سطر 6: حرف الخاء
-            ["داود", "ديمة", "دانا", "دريد"]       // سطر 7: حرف الدال
+            ["أَسعد", "أدم", "أحمد", "أمير"],       
+            ["بهاء", "بدر", "بيان", "باسم"],       
+            ["تيسير", "تامر", "تركي", "تالا"],      
+            ["صابر", "ثامر", "ثريا", "ثابت"],      
+            ["جمال", "جولي", "جمانة", "جابر"],     
+            ["حسام", "حلا", "حسن", "حاتم"],        
+            ["خالد", "خولة", "خضر", "خالدة"],     
+            ["داود", "ديمة", "دانا", "دريد"]       
         ];
 
         const levelWords = [
@@ -423,7 +427,7 @@
             { count: 5, val: 5, note: 440.00, name: "خمسة" },    
             { count: 6, val: 6, note: 523.25, name: "ستة" },     
             { count: 7, val: 7, note: 587.33, name: "سبعة" },    
-            { count: 8, val: 8, note: 659.25, name: "ثمانية" }    
+            { count: 8, val: 8, note: 1046.50, name: "ثمانية" } // نغمة فرح عالية جداً للنجمة الكبيرة (C6)
         ];
 
         let audioCtx = null;
@@ -447,27 +451,28 @@
                 let now = audioCtx.currentTime;
                 
                 let masterGain = audioCtx.createGain();
-                let volumeMultiplier = Math.min(0.55, 0.25 + (starCount * 0.04)); 
+                let volumeMultiplier = Math.min(0.65, 0.25 + (starCount * 0.05)); 
                 masterGain.gain.setValueAtTime(volumeMultiplier, now);
-                masterGain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+                masterGain.gain.exponentialRampToValueAtTime(0.001, now + (starCount === 8 ? 1.0 : 0.6));
                 masterGain.connect(audioCtx.destination);
 
-                let freqs = [baseFreq, baseFreq * 1.5, baseFreq * 2];
+                // إذا كانت النجمة الكبيرة (8)، نعزز النغمة لتكون فرحة وأعلى تردداً
+                let freqs = starCount === 8 ? [baseFreq, baseFreq * 1.25, baseFreq * 1.5, baseFreq * 2] : [baseFreq, baseFreq * 1.5, baseFreq * 2];
                 freqs.forEach(f => {
                     let osc = audioCtx.createOscillator();
                     let filter = audioCtx.createBiquadFilter();
                     
-                    osc.type = 'sawtooth';
+                    osc.type = starCount === 8 ? 'triangle' : 'sawtooth';
                     osc.frequency.setValueAtTime(f, now);
 
                     filter.type = 'lowpass';
-                    filter.frequency.setValueAtTime(1800, now);
+                    filter.frequency.setValueAtTime(starCount === 8 ? 3000 : 1800, now);
 
                     osc.connect(filter);
                     filter.connect(masterGain);
 
                     osc.start(now);
-                    osc.stop(now + 0.6);
+                    osc.stop(now + (starCount === 8 ? 1.0 : 0.6));
                 });
             } catch (e) {}
         }
@@ -596,7 +601,7 @@
             if (!gameActive) return;
             let item = balloonsData[index];
 
-            playAccordionChord(item.wordData.note, item.wordData.count);
+            playAccordionChord(item.wordData.note, item.wordData.val);
 
             if (gameMode === 'key' && item.isName) {
                 openRowGradually(item.rowIndex);
@@ -607,7 +612,6 @@
                 let textSpan = balloonEl.querySelector('.balloon-text');
                 textSpan.className = "balloon-text"; 
                 textSpan.innerHTML = `<span>${item.wordData.name}</span>`;
-                textSpan.style.fontSize = 'clamp(12px, 3.8vw, 19px)';
                 textSpan.style.color = '#FFD700';
 
                 setTimeout(() => {
@@ -615,13 +619,37 @@
                     createStarBurst(balloonEl, '#FFD700');
                     animateFlyingWord(balloonEl, item.wordData);
 
-                    if (currentTurnSide === 1) {
-                        selectionsSide1.push(item.wordData);
-                        if (selectionsSide1.length >= mode && selectionsSide2.length < mode) {
-                            currentTurnSide = 2;
+                    if (isTieBreaker) {
+                        if (currentTurnSide === 1) {
+                            selectionsSide1 = [item.wordData]; 
+                            currentTurnSide = 2; 
+                        } else {
+                            selectionsSide2 = [item.wordData]; 
+                            let sum1 = selectionsSide1[0].val;
+                            let sum2 = selectionsSide2[0].val;
+                            if (sum1 === sum2) {
+                                currentTurnSide = 1; 
+                            } else {
+                                isTieBreaker = false; 
+                            }
                         }
                     } else {
-                        selectionsSide2.push(item.wordData);
+                        if (currentTurnSide === 1) {
+                            selectionsSide1.push(item.wordData);
+                            if (selectionsSide1.length >= mode && selectionsSide2.length < mode) {
+                                currentTurnSide = 2;
+                            }
+                        } else {
+                            selectionsSide2.push(item.wordData);
+                            if (selectionsSide2.length >= mode) {
+                                let sum1 = selectionsSide1.reduce((acc, w) => acc + w.val, 0);
+                                let sum2 = selectionsSide2.reduce((acc, w) => acc + w.val, 0);
+                                if (sum1 === sum2) {
+                                    isTieBreaker = true;
+                                    currentTurnSide = 1; 
+                                }
+                            }
+                        }
                     }
 
                     updateScoresDisplay();
@@ -656,7 +684,7 @@
                 setTimeout(() => {
                     legendaryBalloonEl.classList.add('revealed', 'legendary-gold-pulse');
                     legendaryBalloonEl.querySelector('.inner-word-grid').innerHTML = buildBalloonStarsHTML(8, true);
-                    playAccordionChord(880, 8);
+                    playAccordionChord(1046.50, 8);
                     gameActive = false;
                 }, 400);
             }
@@ -787,6 +815,7 @@
             selectionsSide1 = [];
             selectionsSide2 = [];
             currentTurnSide = 1;
+            isTieBreaker = false;
             document.getElementById('side1Badges').innerHTML = '';
             document.getElementById('side2Badges').innerHTML = '';
             document.getElementById('container1').classList.remove('winner-gold-border');

@@ -215,10 +215,10 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(8, 1fr);
-            gap: 2px;
+            gap: 1px;
             width: 100%;
             flex: 1;
-            margin: 2px 0;
+            margin: 1px 0;
             padding: 0;
         }
 
@@ -231,8 +231,9 @@
             align-items: center;
             background: radial-gradient(circle at 35% 30%, #ffffff, #a4b0be 50%, #2f3640 100%);
             border-radius: 50% 50% 50% 50% / 55% 55% 45% 45%;
-            box-shadow: inset -1px -1px 4px rgba(0,0,0,0.6), 0 1px 3px rgba(255,255,255,0.2);
+            box-shadow: inset -1px -1px 3px rgba(0,0,0,0.6), 0 1px 2px rgba(255,255,255,0.2);
             position: relative;
+            overflow: hidden;
             transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
             animation: floatBalloon 2.2s ease-in-out infinite alternate;
         }
@@ -269,22 +270,23 @@
             100% { transform: scale(1.18); box-shadow: 0 0 50px #FFD700, inset 0 0 25px #FFF; filter: brightness(1.5); }
         }
 
+        /* تحجيم ديناميكي ذكي يملأ المساحة لأقصى حد ممكن */
         .balloon-text {
-            font-size: 0.9em;
-            font-weight: 900;
-            color: #000000;
-            text-shadow: 0 1px 2px rgba(255,255,255,0.9), 0 0 1px rgba(0,0,0,0.5);
-            text-align: center;
-            line-height: 1;
             position: relative;
             z-index: 3;
-            width: 100%;
-            padding: 0 1px;
+            width: 96%;
+            height: 96%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            text-align: center;
+            font-weight: 900;
+            color: #000000;
+            text-shadow: 0 1px 3px rgba(255,255,255,0.95), 0 0 2px rgba(0,0,0,0.6);
+            line-height: 0.95;
             letter-spacing: -0.5px;
+            font-size: clamp(10px, 3.2vw, 17px);
         }
 
         .inner-word-grid {
@@ -295,23 +297,23 @@
             gap: 1px;
             position: absolute;
             z-index: 4;
-            width: 85%;
-            height: 85%;
+            width: 95%;
+            height: 95%;
         }
 
         .giant-star-display {
-            font-size: 2em;
+            font-size: 2.2em;
             filter: drop-shadow(0 0 10px #FFD700);
             animation: pulseStarIcon 1s infinite alternate ease-in-out;
         }
 
         @keyframes pulseStarIcon {
             0% { transform: scale(0.9); }
-            100% { transform: scale(1.15); }
+            100% { transform: scale(1.18); }
         }
 
         .balloon-star-item {
-            font-size: 0.85em;
+            font-size: 0.95em;
             line-height: 1;
             color: #FFD700;
             text-shadow: 0 1px 2px rgba(0,0,0,0.9);
@@ -327,7 +329,7 @@
 
         .flying-word {
             position: fixed;
-            font-size: 1em;
+            font-size: 1.1em;
             z-index: 999;
             pointer-events: none;
             animation: flyToScore 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
@@ -340,7 +342,7 @@
 
         .star-particle {
             position: absolute;
-            font-size: 0.8em;
+            font-size: 0.9em;
             pointer-events: none;
             animation: burstStar 0.5s ease-out forwards;
         }
@@ -392,19 +394,17 @@
         let currentTurnSide = 1; 
         let isRevealed = false; 
 
-        // السطور الـ 8 مرتبة حسب الحروف الأبجدية للعمود 1, 2, 3 لكل سطر (أ، ب، ت، ث، ج، ح، خ، د)
         const alphabeticalRowsNames = [
-            ["أدم", "أحمد", "أمير"],       // سطر 0: حرف الألف
-            ["بدر", "بيان", "باسم"],       // سطر 1: حرف الباء
-            ["تامر", "تركي", "تالا"],      // سطر 2: حرف التاء
-            ["ثامر", "ثريا", "ثابت"],      // سطر 3: حرف الثاء
-            ["جولي", "جمانة", "جابر"],     // سطر 4: حرف الجيم (تم استبدال جنات بـ جمانة)
-            ["حلا", "حسن", "حاتم"],        // سطر 5: حرف الحاء
-            ["خالد", "خولة", "خضر"],      // سطر 6: حرف الخاء
-            ["داود", "ديمة", "دانا"]       // سطر 7: حرف الدال
+            ["أدم", "أحمد", "أمير"],       
+            ["بدر", "بيان", "باسم"],       
+            ["تامر", "تركي", "تالا"],      
+            ["ثامر", "ثريا", "ثابت"],      
+            ["جولي", "جمانة", "جابر"],     
+            ["حلا", "حسن", "حاتم"],        
+            ["خالد", "خولة", "خضر"],      
+            ["داود", "ديمة", "دانا"]       
         ];
 
-        // العمود الأول الثابت والمتعاقب حسب اتفاقنا
         const col0Row4Options = ["أبوغيثْ يُولدي", "هلولة", "أحمد الليبي"];
         const col0Row7Options = ["شويكة", "حيدر"];
         let toggleStateRow7 = 0; 
@@ -613,7 +613,7 @@
                 let textSpan = balloonEl.querySelector('.balloon-text');
                 textSpan.className = "balloon-text"; 
                 textSpan.innerHTML = `<span>${item.wordData.name}</span>`;
-                textSpan.style.fontSize = '1em';
+                textSpan.style.fontSize = 'clamp(12px, 3.8vw, 19px)';
                 textSpan.style.color = '#FFD700';
 
                 setTimeout(() => {

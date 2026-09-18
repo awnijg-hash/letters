@@ -49,144 +49,32 @@
             padding: 2px;
             z-index: 2;
             position: relative;
+            transition: transform 0.15s ease, filter 0.15s ease;
         }
 
-        #idleOverlayScreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(4px);
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            padding: 20px;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s ease;
-            overflow: hidden;
+        .game-viewport.screen-surprise-pulse {
+            animation: screenDoublePulseAnim 0.7s ease forwards;
         }
 
-        #idleOverlayScreen.visible {
-            opacity: 1;
-            pointer-events: auto;
+        @keyframes screenDoublePulseAnim {
+            0% { transform: scale(1); filter: brightness(1); }
+            20% { transform: scale(1.05); filter: brightness(1.8) saturate(1.6); background-color: rgba(255, 215, 0, 0.4); }
+            40% { transform: scale(0.97); filter: brightness(0.9); }
+            65% { transform: scale(1.03); filter: brightness(1.6) saturate(1.6); background-color: rgba(255, 215, 0, 0.4); }
+            85% { transform: scale(0.99); filter: brightness(0.95); }
+            100% { transform: scale(1); filter: brightness(1); }
         }
 
-        .idle-top-banner {
-            font-size: clamp(20px, 5vw, 36px);
-            color: #FFD700;
-            text-align: center;
-            font-weight: 900;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.9), 0 0 20px rgba(255, 215, 0, 0.7);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            z-index: 10;
-            animation: bannerGlowPulse 1.5s infinite alternate ease-in-out;
-        }
-
-        @keyframes bannerGlowPulse {
-            0% { transform: scale(1); filter: brightness(0.9); }
-            100% { transform: scale(1.04); filter: brightness(1.2); }
-        }
-
-        #physicsContainer {
-            position: absolute;
-            top: 100px;
-            left: 0;
-            width: 100vw;
-            height: calc(100vh - 100px);
-            pointer-events: none;
-        }
-
-        .floating-cell {
-            position: absolute;
-            background: rgba(30, 41, 59, 0.95);
-            border: 3px solid #FFD700;
-            color: #FFD700;
-            border-radius: 12px;
-            font-weight: 900;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.8), 0 0 15px rgba(255, 215, 0, 0.5);
-            cursor: pointer;
-            pointer-events: auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            user-select: none;
-            transition: filter 0.2s ease;
-        }
-
-        .floating-cell:nth-child(even) {
-            border-color: #38bdf8;
-            color: #38bdf8;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.8), 0 0 15px rgba(56, 189, 248, 0.5);
-        }
-
-        .floating-cell.shaking {
-            animation: cellShake 0.3s ease infinite !important;
-            border-color: #ef4444 !important;
-        }
-
-        @keyframes cellShake {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(-2px, 1px) rotate(-2deg); }
-            50% { transform: translate(2px, -1px) rotate(2deg); }
-            75% { transform: translate(-1px, -1px) rotate(-1deg); }
-            100% { transform: translate(0, 0) rotate(0deg); }
-        }
-
-        .floating-cell.expanding-launch {
-            animation: none !important;
-            width: 100vw !important;
-            max-width: 100vw !important;
-            height: 100vh !important;
-            border-radius: 0 !important;
-            position: fixed !important;
-            left: 0 !important;
-            top: 0 !important;
-            z-index: 10000;
-            background: #FFD700 !important;
-            color: #000 !important;
-            border-color: #FFF !important;
-            box-shadow: 0 0 100px #FFF, inset 0 0 50px #FFF !important;
-            animation: intenseFlash 0.4s ease forwards;
-        }
-
-        @keyframes intenseFlash {
-            0% { filter: brightness(1); transform: scaleX(0.8); }
-            50% { filter: brightness(3); transform: scaleX(1); }
-            100% { filter: brightness(2); transform: scaleX(1); }
-        }
-
-        /* 30 لفة كاملة (30 دورة * 360 درجة = 10800 درجة) مقسمة بالتساوي على مرحلتي التصغير والتكبير بلا أي توقف */
         .independent-spin {
             animation: thirtyLapsSpinAnimation 2.0s ease-in-out forwards;
             transform-origin: center center;
         }
 
         @keyframes thirtyLapsSpinAnimation {
-            0% {
-                transform: scale(1) rotate(0deg);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(0) rotate(5400deg); /* 15 لفة مع تصغير متواصل حتى الصفر في المنتصف */
-                opacity: 0;
-            }
-            50.1% {
-                transform: scale(0) rotate(5400deg);
-                opacity: 0;
-            }
-            100% {
-                transform: scale(1) rotate(10800deg); /* 15 لفة إضافية مع تكبير متواصل للعودة للنهاية (المجموع 30 لفة) */
-                opacity: 1;
-            }
+            0% { transform: scale(1) rotate(0deg); opacity: 1; }
+            50% { transform: scale(0) rotate(5400deg); opacity: 0; }
+            50.1% { transform: scale(0) rotate(5400deg); opacity: 0; }
+            100% { transform: scale(1) rotate(10800deg); opacity: 1; }
         }
 
         .fs-btn {
@@ -211,33 +99,6 @@
             gap: 2px;
             flex: 0 0 auto;
             margin-top: 16px;
-        }
-
-        .mode-bar-wrapper {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            gap: 4px;
-        }
-
-        .mode-title-bar {
-            flex: 2;
-            background: rgba(15, 23, 42, 0.7);
-            border: 2px solid #0284c7;
-            color: #fff;
-            font-size: 0.6em;
-            text-align: center;
-            padding: 3px 2px;
-            border-radius: 6px;
-            cursor: pointer;
-            box-shadow: 0 3px 0 #0369a1;
-        }
-
-        .mode-title-bar.active-mode {
-            border: 2px solid #FFD700;
-            background: rgba(30, 41, 59, 0.95);
-            box-shadow: 0 3px 0 #b8860b, 0 0 12px rgba(255, 215, 0, 0.8);
-            color: #FFD700;
         }
 
         .top-panel-wrapper {
@@ -271,17 +132,36 @@
             padding: 4px;
             box-shadow: 0 3px 0 rgba(2, 132, 199, 0.5);
             position: relative;
+            transition: transform 0.2s ease;
+        }
+
+        .score-box.mode-selector-box {
+            background: rgba(15, 23, 42, 0.95) !important;
+            border: 2px solid #FFD700 !important;
+            color: #FFD700 !important;
+            font-size: clamp(14px, 2.5vw, 20px);
+            font-weight: 900;
+            justify-content: center !important;
+            align-items: center !important;
+            text-align: center;
+            box-shadow: 0 3px 0 #b8860b, 0 0 12px rgba(255, 215, 0, 0.6);
+            animation: selectorPulse 1s infinite alternate;
+        }
+
+        @keyframes selectorPulse {
+            0% { transform: scale(1); box-shadow: 0 0 8px rgba(255, 215, 0, 0.5); }
+            100% { transform: scale(1.02); box-shadow: 0 0 16px rgba(255, 215, 0, 0.9); }
         }
 
         .score-box.winner-gold-border {
             border: 3px solid #FFD700 !important;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 1), inset 0 0 16px rgba(255, 215, 0, 0.9);
-            animation: winnerBorderPulse 0.8s infinite alternate ease-in-out;
+            box-shadow: 0 0 35px rgba(255, 215, 0, 1), inset 0 0 16px rgba(255, 215, 0, 0.9);
+            animation: winnerBoxPulseInfinite 1.0s infinite ease-in-out alternate;
         }
 
-        @keyframes winnerBorderPulse {
-            0% { background: rgba(239, 68, 68, 0.6); }
-            100% { background: rgba(239, 68, 68, 0.95); }
+        @keyframes winnerBoxPulseInfinite {
+            0% { transform: scale(1); background: rgba(239, 68, 68, 0.75); }
+            100% { transform: scale(1.07); background: rgba(239, 68, 68, 0.98); box-shadow: 0 0 50px rgba(255, 215, 0, 1), inset 0 0 24px rgba(255, 215, 0, 1); }
         }
 
         .center-art-box {
@@ -356,9 +236,10 @@
             background: radial-gradient(circle at 35% 30%, #4ade80, #15803d 60%, #064e3b 100%) !important;
         }
 
+        /* تصميم نمط النجمة الذهبية مع خلفية ذهبية فخمة وحدود واضحة حول النجمة الداخلية */
         .balloon.legendary-gold-pulse, .balloon.revealed.is-legendary {
             animation: giantStarGlow 0.8s infinite alternate !important;
-            background: radial-gradient(circle at center, #ffffff 0%, #FFD700 40%, #b8860b 100%) !important;
+            background: radial-gradient(circle at center, #fff6b7 0%, #ffd700 45%, #b8860b 100%) !important;
             border: 3px solid #FFF !important;
             box-shadow: 0 0 35px #FFD700, 0 0 60px rgba(255, 215, 0, 0.8) !important;
             z-index: 10;
@@ -367,6 +248,31 @@
         @keyframes giantStarGlow {
             0% { transform: scale(1); box-shadow: 0 0 25px #FFD700, 0 0 40px rgba(255, 215, 0, 0.6); }
             100% { transform: scale(1.18); box-shadow: 0 0 55px #FFD700, 0 0 80px rgba(255, 215, 0, 1); }
+        }
+
+        .legendary-gold-pulse .giant-star-display, .balloon.revealed.is-legendary .giant-star-display {
+            -webkit-text-stroke: 1.5px #7a5200;
+            text-shadow: 0 0 10px #ffffff, 0 0 15px #ffcc00;
+        }
+
+        /* تصميم نمط الثلاث دوائر (ومضة خفيفة ونجمة تتحرك بدون تكبير البالون) */
+        .balloon.numbers-star-mild {
+            animation: mildFlash 0.5s ease forwards;
+        }
+
+        @keyframes mildFlash {
+            0% { filter: brightness(1); }
+            50% { filter: brightness(1.5); }
+            100% { filter: brightness(1); }
+        }
+
+        .balloon.numbers-star-mild .giant-star-display {
+            animation: subtleStarMove 1.5s infinite ease-in-out alternate;
+        }
+
+        @keyframes subtleStarMove {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-3px) rotate(10deg); }
         }
 
         .balloon-text {
@@ -444,34 +350,25 @@
 </head>
 <body>
 
-    <div id="idleOverlayScreen" onclick="handleOverlayBackgroundClick(event)">
-        <div class="idle-top-banner">
-            🌹 أهلاً وسهلاً بكم في تحديات الأسماء والنجوم 🌹
-        </div>
-        <div id="physicsContainer"></div>
-    </div>
-
     <div class="game-viewport" id="gameViewport">
         <button class="fs-btn" onclick="playKeyboardClick(); toggleFullScreen()">⛶ ملء الشاشة</button>
 
         <div class="top-panel-container">
-            <div class="mode-bar-wrapper">
-                <div class="mode-title-bar" id="barGolden" onclick="playKeyboardClick(); triggerKeyGameWithMix()">⭐ تحدي النجمة الذهبية</div>
-                <div class="mode-title-bar active-mode" id="barCircles" onclick="playKeyboardClick(); setGameMode('numbers')">⭕ تحدي الثلاث دوائر</div>
-            </div>
-
             <div class="top-panel-wrapper">
-                <div class="side-column" onclick="playKeyboardClick(); setGameMode('numbers')">
-                    <div class="score-box" id="container1">
-                        <div id="side1Badges" class="stars-egg-carton"></div>
+                <!-- خانة السكور والنمط الأيمن -->
+                <div class="side-column" onclick="playKeyboardClick(); handleBoxClick('numbers')">
+                    <div class="score-box mode-selector-box" id="container1">
+                        تحدي الثلاث دوائر
                     </div>
                 </div>
 
-                <div class="center-art-box" onclick="playKeyboardClick(); playCardShuffleSound(); toggleRevealAndMix()" title="كشف / تغطية وخلط"></div>
+                <!-- زر الخلط الأوسط -->
+                <div class="center-art-box" onclick="playKeyboardClick(); triggerCenterMixOnly()" title="خلط وتصفير السكورات"></div>
 
-                <div class="side-column" onclick="playKeyboardClick(); triggerKeyGameWithMix()">
-                    <div class="score-box" id="container2">
-                        <div id="side2Badges" class="stars-egg-carton"></div>
+                <!-- خانة السكور والنمط الأيسر -->
+                <div class="side-column" onclick="playKeyboardClick(); handleBoxClick('key')">
+                    <div class="score-box mode-selector-box" id="container2">
+                        تحدي النجمة الذهبية
                     </div>
                 </div>
             </div>
@@ -488,288 +385,11 @@
         let balloonsData = [];
         let gameActive = true;
         let currentTurnSide = 1; 
-        let isRevealed = false; 
         let isTieBreaker = false; 
         let legendaryKeyFound = false;
         let continuousSparkInterval = null;
-
-        let physicsCells = [];
-        let physicsAnimFrame = null;
-        let divisionTimer = null;
-
-        let idleTimer = null;
-        const IDLE_LIMIT = 10000; 
-
-        function resetIdleTimer() {
-            let overlay = document.getElementById('idleOverlayScreen');
-            if (overlay.classList.contains('expanding-launch')) return;
-
-            clearTimeout(idleTimer);
-            idleTimer = setTimeout(() => {
-                showIdleOverlay();
-            }, IDLE_LIMIT);
-        }
-
-        function showIdleOverlay() {
-            let overlay = document.getElementById('idleOverlayScreen');
-            if (overlay.classList.contains('visible')) return;
-            overlay.classList.add('visible');
-            initPhysicsCells();
-            startPhysicsLoop();
-            startDivisionInterval();
-        }
-
-        function hideIdleOverlay() {
-            let overlay = document.getElementById('idleOverlayScreen');
-            overlay.classList.remove('visible');
-            stopPhysicsLoop();
-            stopDivisionInterval();
-        }
-
-        function playWaterDropSound() {
-            try {
-                initAudio();
-                let now = audioCtx.currentTime;
-                let osc = audioCtx.createOscillator();
-                let gain = audioCtx.createGain();
-
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(1200, now);
-                osc.frequency.exponentialRampToValueAtTime(400, now + 0.08);
-
-                gain.gain.setValueAtTime(0.15, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
-
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-
-                osc.start(now);
-                osc.stop(now + 0.08);
-            } catch (e) {}
-        }
-
-        function initPhysicsCells() {
-            physicsCells = [];
-            let container = document.getElementById('physicsContainer');
-            container.innerHTML = '';
-
-            let screenW = window.innerWidth;
-            let screenH = window.innerHeight - 120;
-
-            let initialData = [
-                { type: 'numbers', text: 'تحدي الثلاث دوائر', w: Math.min(300, screenW * 0.4), h: 100 },
-                { type: 'key', text: 'تحدي النجمة الذهبية', w: Math.min(300, screenW * 0.4), h: 100 }
-            ];
-
-            initialData.forEach((d, idx) => {
-                let x = idx === 0 ? screenW * 0.1 : screenW * 0.55;
-                let y = screenH * 0.3 + (Math.random() * 50);
-                let vx = (Math.random() - 0.5) * 0.8;
-                let vy = (Math.random() - 0.5) * 0.8;
-
-                let el = document.createElement('div');
-                el.className = 'floating-cell';
-                el.style.width = d.w + 'px';
-                el.style.height = d.h + 'px';
-                el.innerText = d.text;
-                el.style.fontSize = 'clamp(12px, 2.5vw, 20px)';
-                el.onclick = (e) => selectIdleMode(d.type, e);
-
-                container.appendChild(el);
-
-                physicsCells.push({
-                    x: x, y: y, vx: vx === 0 ? 0.3 : vx, vy: vy === 0 ? 0.3 : vy,
-                    w: d.w, h: d.h, type: d.type, text: d.text, el: el
-                });
-            });
-        }
-
-        function startPhysicsLoop() {
-            stopPhysicsLoop();
-            function loop() {
-                let container = document.getElementById('physicsContainer');
-                if (!container) return;
-                let maxW = container.clientWidth;
-                let maxH = container.clientHeight;
-
-                for (let i = 0; i < physicsCells.length; i++) {
-                    let c = physicsCells[i];
-                    c.x += c.vx;
-                    c.y += c.vy;
-
-                    if (c.x <= 0) { c.x = 0; c.vx *= -1; playWaterDropSound(); }
-                    if (c.x + c.w >= maxW) { c.x = maxW - c.w; c.vx *= -1; playWaterDropSound(); }
-                    if (c.y <= 0) { c.y = 0; c.vy *= -1; playWaterDropSound(); }
-                    if (c.y + c.h >= maxH) { c.y = maxH - c.h; c.vy *= -1; playWaterDropSound(); }
-                }
-
-                for (let i = 0; i < physicsCells.length; i++) {
-                    for (let j = i + 1; j < physicsCells.length; j++) {
-                        let c1 = physicsCells[i];
-                        let c2 = physicsCells[j];
-
-                        if (c1.x < c2.x + c2.w && c1.x + c1.w > c2.x &&
-                            c1.y < c2.y + c2.h && c1.y + c1.h > c2.y) {
-                            
-                            let tempVx = c1.vx;
-                            let tempVy = c1.vy;
-                            c1.vx = c2.vx;
-                            c1.vy = c2.vy;
-                            c2.vx = tempVx;
-                            c2.vy = tempVy;
-
-                            playWaterDropSound();
-
-                            let overlapX = Math.min(c1.x + c1.w - c2.x, c2.x + c2.w - c1.x);
-                            let overlapY = Math.min(c1.y + c1.h - c2.y, c2.y + c2.h - c1.y);
-                            if (overlapX < overlapY) {
-                                if (c1.x < c2.x) { c1.x -= overlapX / 2; c2.x += overlapX / 2; }
-                                else { c1.x += overlapX / 2; c2.x -= overlapX / 2; }
-                            } else {
-                                if (c1.y < c2.y) { c1.y -= overlapY / 2; c2.y += overlapY / 2; }
-                                else { c1.y += overlapY / 2; c2.y -= overlapY / 2; }
-                            }
-                        }
-                    }
-                }
-
-                for (let i = 0; i < physicsCells.length; i++) {
-                    let c = physicsCells[i];
-                    c.el.style.transform = `translate(${c.x}px, ${c.y}px)`;
-                }
-
-                physicsAnimFrame = requestAnimationFrame(loop);
-            }
-            physicsAnimFrame = requestAnimationFrame(loop);
-        }
-
-        function stopPhysicsLoop() {
-            if (physicsAnimFrame) {
-                cancelAnimationFrame(physicsAnimFrame);
-                physicsAnimFrame = null;
-            }
-        }
-
-        function startDivisionInterval() {
-            stopDivisionInterval();
-            divisionTimer = setInterval(() => {
-                let overlay = document.getElementById('idleOverlayScreen');
-                if (!overlay.classList.contains('visible') || physicsCells.length >= 16) return;
-
-                physicsCells.forEach(c => c.el.classList.add('shaking'));
-
-                setTimeout(() => {
-                    let newCells = [];
-                    let container = document.getElementById('physicsContainer');
-                    if (!container) return;
-
-                    physicsCells.forEach(c => {
-                        c.el.classList.remove('shaking');
-                        c.el.remove();
-
-                        let newW = c.w * 0.75;
-                        let newH = c.h * 0.75;
-
-                        for (let k = 0; k < 2; k++) {
-                            let angle = Math.random() * Math.PI * 2;
-                            let speed = 0.4 + Math.random() * 0.3;
-                            let subEl = document.createElement('div');
-                            subEl.className = 'floating-cell';
-                            subEl.style.width = newW + 'px';
-                            subEl.style.height = newH + 'px';
-                            subEl.innerText = c.text;
-                            subEl.style.fontSize = 'clamp(10px, 2vw, 16px)';
-                            subEl.onclick = (e) => selectIdleMode(c.type, e);
-
-                            container.appendChild(subEl);
-
-                            newCells.push({
-                                x: c.x + (k === 0 ? -10 : 10),
-                                y: c.y + (k === 0 ? -10 : 10),
-                                vx: Math.cos(angle) * speed,
-                                vy: Math.sin(angle) * speed,
-                                w: newW, h: newH, type: c.type, text: c.text, el: subEl
-                            });
-                        }
-                    });
-
-                    physicsCells = newCells;
-                    playBalloonTone(7, 1);
-                }, 300);
-
-            }, 15000);
-        }
-
-        function stopDivisionInterval() {
-            if (divisionTimer) {
-                clearInterval(divisionTimer);
-                divisionTimer = null;
-            }
-        }
-
-        window.addEventListener('mousemove', (e) => {
-            let overlay = document.getElementById('idleOverlayScreen');
-            if (overlay.classList.contains('visible')) {
-                initPhysicsCells();
-                startDivisionInterval();
-            }
-            resetIdleTimer();
-        }, { passive: true });
-
-        window.addEventListener('wheel', (e) => {
-            let overlay = document.getElementById('idleOverlayScreen');
-            if (overlay.classList.contains('visible')) {
-                initPhysicsCells();
-                startDivisionInterval();
-            }
-            resetIdleTimer();
-        }, { passive: true });
-
-        ['keydown', 'touchstart'].forEach(evt => {
-            window.addEventListener(evt, resetIdleTimer, { passive: true });
-        });
-
-        let resultTimer = null;
-        const RESULT_DELAY = 10000;
-
-        function triggerResultTimer() {
-            clearTimeout(resultTimer);
-            resultTimer = setTimeout(() => {
-                showIdleOverlay();
-            }, RESULT_DELAY);
-        }
-
-        function cancelResultTimer() {
-            clearTimeout(resultTimer);
-        }
-
-        function handleOverlayBackgroundClick(event) {
-            if (event.target.id === 'idleOverlayScreen') {
-                playKeyboardClick();
-                hideIdleOverlay();
-                resetIdleTimer();
-            }
-        }
-
-        function selectIdleMode(modeType, event) {
-            event.stopPropagation();
-            playKeyboardClick();
-            let cardElement = event.currentTarget;
-            cardElement.classList.add('expanding-launch');
-            
-            setTimeout(() => {
-                hideIdleOverlay();
-                let overlay = document.getElementById('idleOverlayScreen');
-                overlay.classList.remove('expanding-launch');
-
-                if (modeType === 'numbers') {
-                    setGameMode('numbers');
-                } else {
-                    triggerKeyGameWithMix();
-                }
-                resetIdleTimer();
-            }, 400);
-        }
+        let modeSelected = false; 
+        let resultTriggered = false; 
 
         const fixedGridNames = [
             ["أَسعد", "أدم", "أحمد", "أمير"],       
@@ -807,12 +427,35 @@
                 osc.type = 'square';
                 osc.frequency.setValueAtTime(800, now);
                 osc.frequency.exponentialRampToValueAtTime(200, now + 0.04);
-                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.setValueAtTime(0.35, now);
                 gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
                 osc.start(now);
                 osc.stop(now + 0.04);
+            } catch (e) {}
+        }
+
+        function playSurpriseSound() {
+            try {
+                initAudio();
+                let now = audioCtx.currentTime;
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(250, now);
+                osc.frequency.exponentialRampToValueAtTime(850, now + 0.25);
+                osc.frequency.exponentialRampToValueAtTime(200, now + 0.7);
+
+                gain.gain.setValueAtTime(0.7, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.7);
             } catch (e) {}
         }
 
@@ -828,7 +471,7 @@
                     for (let n = 0; n < 4; n++) {
                         let startTime = groupStartTime + n * 0.15;
                         let masterGain = audioCtx.createGain();
-                        masterGain.gain.setValueAtTime(0.65, startTime);
+                        masterGain.gain.setValueAtTime(0.8, startTime);
                         masterGain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.06);
                         masterGain.connect(audioCtx.destination);
                         let osc = audioCtx.createOscillator();
@@ -849,15 +492,15 @@
                 let index = Math.max(0, Math.min(starCount - 1, balloonScale.length - 1));
                 let baseFreq = balloonScale[index];
                 let masterGain = audioCtx.createGain();
-                masterGain.gain.setValueAtTime(0.6, now);
-                masterGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                masterGain.gain.setValueAtTime(0.75, now);
+                masterGain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
                 masterGain.connect(audioCtx.destination);
                 let osc = audioCtx.createOscillator();
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(baseFreq, now);
                 osc.connect(masterGain);
                 osc.start(now);
-                osc.stop(now + 0.4);
+                osc.stop(now + 0.45);
             } catch (e) {}
         }
 
@@ -871,7 +514,7 @@
                     let gain = audioCtx.createGain();
                     osc.type = 'triangle';
                     osc.frequency.setValueAtTime(400 + (i * 45), startTime);
-                    gain.gain.setValueAtTime(0.15, startTime);
+                    gain.gain.setValueAtTime(0.3, startTime);
                     gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.09);
                     osc.connect(gain);
                     gain.connect(audioCtx.destination);
@@ -942,21 +585,11 @@
             return `<span>${text}</span>`;
         }
 
-        function renderBalloons(preserveRevealed = false) {
+        function renderBalloons() {
             const grid = document.getElementById('balloonsGrid');
-            if (!preserveRevealed || balloonsData.length === 0) {
-                balloonsData = generateBalloonsData();
-            } else {
-                let tempBalloons = generateBalloonsData();
-                for(let i=0; i<32; i++) {
-                    balloonsData[i].wordData = tempBalloons[i].wordData;
-                    balloonsData[i].revealed = false; 
-                    balloonsData[i].selectedBySide = 0;
-                }
-            }
+            balloonsData = generateBalloonsData();
 
             grid.innerHTML = '';
-            isRevealed = false;
             legendaryKeyFound = false;
             stopContinuousSparks();
 
@@ -968,10 +601,8 @@
                 let formattedText = formatBalloonText(item.text);
                 
                 let classList = "balloon";
-                if (isLeg && item.revealed) classList += " is-legendary";
                 if (isColZero) classList += " col-zero"; 
                 if (gameMode === 'key' && item.colIndex === 3) classList += " column-green-glow";
-                if (item.revealed) classList += " revealed";
 
                 grid.innerHTML += `
                     <div class="${classList}" id="balloon-${i}" onclick="handleBalloonClick(${i})">
@@ -981,22 +612,39 @@
             }
         }
 
-        function updateModeBarsUI() {
-            let barGolden = document.getElementById('barGolden');
-            let barCircles = document.getElementById('barCircles');
-            barGolden.classList.remove('active-mode');
-            barCircles.classList.remove('active-mode');
-            if (gameMode === 'key') barGolden.classList.add('active-mode');
-            else barCircles.classList.add('active-mode');
+        function updateBoxesUI() {
+            let box1 = document.getElementById('container1');
+            let box2 = document.getElementById('container2');
+
+            box1.classList.remove('winner-gold-border');
+            box2.classList.remove('winner-gold-border');
+
+            if (!modeSelected) {
+                box1.className = "score-box mode-selector-box";
+                box2.className = "score-box mode-selector-box";
+                box1.innerHTML = "تحدي الثلاث دوائر";
+                box2.innerHTML = "تحدي النجمة الذهبية";
+            } else {
+                box1.className = "score-box";
+                box2.className = "score-box";
+                box1.innerHTML = `<div id="side1Badges" class="stars-egg-carton"></div>`;
+                box2.innerHTML = `<div id="side2Badges" class="stars-egg-carton"></div>`;
+                updateScoresDisplay();
+            }
+        }
+
+        function handleBoxClick(type) {
+            gameMode = type;
+            modeSelected = true; 
+            resultTriggered = false;
+            updateBoxesUI();
         }
 
         function triggerIndependentSpinAnimation(callback) {
             let elementsToSpin = [
-                document.getElementById('barGolden'),
-                document.getElementById('barCircles'),
-                document.getElementById('container1').parentElement,
+                document.getElementById('container1'),
                 document.querySelector('.center-art-box'),
-                document.getElementById('container2').parentElement,
+                document.getElementById('container2'),
                 document.getElementById('balloonsGrid')
             ];
             elementsToSpin.forEach(el => { if (el) el.classList.add('independent-spin'); });
@@ -1008,29 +656,15 @@
             }, 2000);
         }
 
-        function toggleRevealAndMix() {
-            cancelResultTimer();
-            let grid = document.getElementById('balloonsGrid');
-            let cards = document.querySelectorAll('.balloon');
-            if (!isRevealed) {
-                isRevealed = true;
-                cards.forEach(card => {
-                    card.classList.add('revealed');
-                    let idx = card.id.split('-')[1];
-                    balloonsData[idx].revealed = true;
-                });
-            } else {
-                cards.forEach(card => card.classList.remove('revealed'));
-                stopContinuousSparks();
-                triggerIndependentSpinAnimation(() => { renderBalloons(true); });
-            }
+        function triggerCenterMixOnly() {
+            triggerIndependentSpinAnimation(() => {
+                resetGame();
+            });
         }
 
         function handleBalloonClick(index) {
-            if (!gameActive) return;
-            if (gameMode === 'key' && legendaryKeyFound) return;
+            if (!modeSelected || !gameActive) return;
             
-            cancelResultTimer(); 
             let item = balloonsData[index];
             let balloonEl = document.getElementById(`balloon-${index}`);
 
@@ -1047,13 +681,14 @@
 
                     item.revealed = false;
                     item.selectedBySide = 0;
-                    balloonEl.classList.remove('revealed', 'is-legendary');
+                    balloonEl.classList.remove('revealed', 'is-legendary', 'numbers-star-mild');
                     
                     let textSpan = balloonEl.querySelector('.balloon-text');
                     textSpan.className = "balloon-text";
                     textSpan.innerHTML = formatBalloonText(item.text);
                     textSpan.style.color = '#000000';
 
+                    resultTriggered = false; 
                     playKeyboardClick();
                     updateScoresDisplay();
                     return;
@@ -1071,11 +706,7 @@
                     currentTurnSide = 2;
                 }
 
-                if (item.wordData.val === 8) {
-                    playLegendaryGoldTone(false);
-                } else {
-                    playBalloonTone(item.wordData.count, 1);
-                }
+                playBalloonTone(item.wordData.count, 1);
 
                 let textSpan = balloonEl.querySelector('.balloon-text');
                 textSpan.className = "balloon-text"; 
@@ -1086,9 +717,11 @@
                     balloonEl.classList.add('revealed');
                     item.revealed = true;
                     item.selectedBySide = currentTurnSide;
+                    
                     if (item.wordData.val === 8) {
-                        balloonEl.classList.add('is-legendary');
+                        balloonEl.classList.add('numbers-star-mild');
                     }
+
                     createStarBurst(balloonEl, '#FFD700');
                     animateFlyingWord(balloonEl, item.wordData);
 
@@ -1117,7 +750,7 @@
                                     selectionsSide1 = [];
                                     selectionsSide2 = [];
                                     balloonsData.forEach(b => { b.revealed = false; b.selectedBySide = 0; });
-                                    renderBalloons(true);
+                                    renderBalloons();
                                 }
                             }
                         }
@@ -1135,37 +768,20 @@
                 if (balloonEl && !balloonEl.classList.contains('revealed')) {
                     let wordData = balloonsData[balloonIdx].wordData;
                     setTimeout(() => {
-                        if (legendaryKeyFound) return;
+                        if (legendaryKeyFound && gameMode === 'key') return;
                         balloonEl.classList.add('revealed');
                         balloonsData[balloonIdx].revealed = true;
                         if (wordData.val === 8) {
                             playLegendaryGoldTone(true);
-                            balloonEl.classList.add('legendary-gold-pulse');
+                            balloonEl.classList.add('legendary-gold-pulse'); 
                             balloonEl.querySelector('.inner-word-grid').innerHTML = buildBalloonStarsHTML(8, true);
                             legendaryKeyFound = true;
-                            triggerResultTimer();
                         } else {
                             playBalloonTone(wordData.count, 1);
                         }
                     }, i * 300);
                 }
             }
-        }
-
-        function triggerKeyGameWithMix() {
-            cancelResultTimer();
-            gameMode = 'key';
-            updateModeBarsUI();
-            stopContinuousSparks();
-            triggerIndependentSpinAnimation(() => { resetGame(); });
-        }
-
-        function setGameMode(modeType) {
-            cancelResultTimer();
-            gameMode = modeType;
-            updateModeBarsUI();
-            stopContinuousSparks();
-            triggerIndependentSpinAnimation(() => { resetGame(); });
         }
 
         function createStarBurst(element, color) {
@@ -1188,7 +804,7 @@
 
         function animateFlyingWord(element, wordData) {
             let rect = element.getBoundingClientRect();
-            let targetContainer = document.getElementById(currentTurnSide === 1 ? 'container1' : 'container2');
+            let targetContainer = document.getElementById('container1');
             let targetRect = targetContainer.getBoundingClientRect();
             let flyer = document.createElement('div');
             flyer.className = 'flying-word';
@@ -1234,32 +850,44 @@
             }, 35);
         }
 
+        function triggerScreenSurpriseEffect() {
+            if (resultTriggered) return;
+            resultTriggered = true;
+            
+            playSurpriseSound();
+            let viewport = document.getElementById('gameViewport');
+            viewport.classList.add('screen-surprise-pulse');
+            setTimeout(() => {
+                viewport.classList.remove('screen-surprise-pulse');
+            }, 700);
+        }
+
         function updateScoresDisplay() {
-            if (gameMode === 'key') return;
+            if (gameMode === 'key' || !modeSelected) return;
             let starsList1 = [], starsList2 = [];
             let sum1 = 0, sum2 = 0;
             selectionsSide1.forEach(word => { sum1 += word.val; for(let i=0; i<word.count; i++) starsList1.push('⭐'); });
             selectionsSide2.forEach(word => { sum2 += word.val; for(let i=0; i<word.count; i++) starsList2.push('⭐'); });
 
-            document.getElementById('side1Badges').innerHTML = buildEggCartonScoreHTML(starsList1);
-            document.getElementById('side2Badges').innerHTML = buildEggCartonScoreHTML(starsList2);
-
             let box1 = document.getElementById('container1');
             let box2 = document.getElementById('container2');
+
+            box1.innerHTML = `<div id="side1Badges" class="stars-egg-carton">${buildEggCartonScoreHTML(starsList1)}</div>`;
+            box2.innerHTML = `<div id="side2Badges" class="stars-egg-carton">${buildEggCartonScoreHTML(starsList2)}</div>`;
+
             box1.classList.remove('winner-gold-border');
             box2.classList.remove('winner-gold-border');
 
             if (selectionsSide1.length >= mode && selectionsSide2.length >= mode && !isTieBreaker) {
+                triggerScreenSurpriseEffect(); 
                 if (sum1 > sum2) { box1.classList.add('winner-gold-border'); startContinuousBorderSparks(box1); }
                 else if (sum2 > sum1) { box2.classList.add('winner-gold-border'); startContinuousBorderSparks(box2); }
-                triggerResultTimer();
             } else {
                 stopContinuousSparks();
             }
         }
 
         function resetGame() {
-            cancelResultTimer();
             gameActive = true;
             legendaryKeyFound = false;
             stopContinuousSparks();
@@ -1267,16 +895,14 @@
             selectionsSide2 = [];
             currentTurnSide = 1;
             isTieBreaker = false;
-            document.getElementById('side1Badges').innerHTML = '';
-            document.getElementById('side2Badges').innerHTML = '';
-            document.getElementById('container1').classList.remove('winner-gold-border');
-            document.getElementById('container2').classList.remove('winner-gold-border');
+            modeSelected = false; 
+            resultTriggered = false;
+            updateBoxesUI();
             renderBalloons();
         }
 
         renderBalloons();
-        updateModeBarsUI();
-        resetIdleTimer();
+        updateBoxesUI();
     </script>
 </body>
 </html>

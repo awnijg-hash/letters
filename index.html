@@ -49,20 +49,6 @@
             padding: 2px;
             z-index: 2;
             position: relative;
-            transition: transform 0.15s ease, filter 0.15s ease;
-        }
-
-        .game-viewport.screen-surprise-pulse {
-            animation: screenDoublePulseAnim 0.7s ease forwards;
-        }
-
-        @keyframes screenDoublePulseAnim {
-            0% { transform: scale(1); filter: brightness(1); }
-            20% { transform: scale(1.05); filter: brightness(1.8) saturate(1.6); background-color: rgba(255, 215, 0, 0.4); }
-            40% { transform: scale(0.97); filter: brightness(0.9); }
-            65% { transform: scale(1.03); filter: brightness(1.6) saturate(1.6); background-color: rgba(255, 215, 0, 0.4); }
-            85% { transform: scale(0.99); filter: brightness(0.95); }
-            100% { transform: scale(1); filter: brightness(1); }
         }
 
         .independent-spin {
@@ -132,49 +118,7 @@
             padding: 4px;
             box-shadow: 0 3px 0 rgba(2, 132, 199, 0.5);
             position: relative;
-            transition: transform 0.2s ease;
-        }
-
-        .score-box.mode-selector-box {
-            background: rgba(15, 23, 42, 0.95) !important;
-            border: 2px solid #FFD700 !important;
-            color: #FFD700 !important;
-            font-size: clamp(14px, 2.5vw, 20px);
-            font-weight: 900;
-            justify-content: center !important;
-            align-items: center !important;
-            text-align: center;
-            box-shadow: 0 3px 0 #b8860b, 0 0 12px rgba(255, 215, 0, 0.6);
-            animation: selectorPulse 1s infinite alternate;
-        }
-
-        @keyframes selectorPulse {
-            0% { transform: scale(1); box-shadow: 0 0 8px rgba(255, 215, 0, 0.5); }
-            100% { transform: scale(1.02); box-shadow: 0 0 16px rgba(255, 215, 0, 0.9); }
-        }
-
-        .score-box.winner-gold-border {
-            border: 3px solid #FFD700 !important;
-            box-shadow: 0 0 35px rgba(255, 215, 0, 1), inset 0 0 16px rgba(255, 215, 0, 0.9);
-            animation: winnerBoxPulseInfinite 1.0s infinite ease-in-out alternate;
-        }
-
-        @keyframes winnerBoxPulseInfinite {
-            0% { transform: scale(1); background: rgba(239, 68, 68, 0.75); }
-            100% { transform: scale(1.07); background: rgba(239, 68, 68, 0.98); box-shadow: 0 0 50px rgba(255, 215, 0, 1), inset 0 0 24px rgba(255, 215, 0, 1); }
-        }
-
-        .center-art-box {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex: 0 1 40px;
-            min-height: 75px;
-            background: linear-gradient(135deg, #000084, #008080, #800080, #000084);
-            border: 2px solid #FFD700;
-            border-radius: 6px;
-            box-shadow: 0 3px 0 #b8860b;
-            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .stars-egg-carton {
@@ -198,6 +142,63 @@
             font-size: 1em;
             color: #FFD700;
             text-shadow: 0 1px 2px rgba(0,0,0,0.9);
+        }
+
+        /* إطار ضوئي نابض للدور الحالي */
+        .score-box.active-turn-glow {
+            border: 3px solid #38bdf8 !important;
+            box-shadow: 0 0 18px rgba(56, 189, 248, 0.9), inset 0 0 10px rgba(56, 189, 248, 0.6);
+            animation: activeTurnPulse 0.9s infinite alternate;
+        }
+
+        @keyframes activeTurnPulse {
+            0% { transform: scale(1); border-color: #38bdf8; }
+            100% { transform: scale(1.02); border-color: #ffffff; box-shadow: 0 0 25px rgba(255, 255, 255, 1); }
+        }
+
+        .score-box.mode-selector-box {
+            background: rgba(15, 23, 42, 0.95) !important;
+            border: 2px solid #FFD700 !important;
+            color: #FFD700 !important;
+            font-size: clamp(14px, 2.5vw, 20px);
+            font-weight: 900;
+            justify-content: center !important;
+            align-items: center !important;
+            text-align: center;
+            box-shadow: 0 3px 0 #b8860b, 0 0 12px rgba(255, 215, 0, 0.6);
+            animation: selectorPulse 1s infinite alternate;
+        }
+
+        @keyframes selectorPulse {
+            0% { transform: scale(1); box-shadow: 0 0 8px rgba(255, 215, 0, 0.5); }
+            100% { transform: scale(1.02); box-shadow: 0 0 16px rgba(255, 215, 0, 0.9); }
+        }
+
+        /* خانة الفائز: نبضة انتفاخ لمرة واحدة ثم ثبات اللون الأحمر والتوهج الذهبي */
+        .score-box.winner-gold-border {
+            border: 3px solid #FFD700 !important;
+            background: rgba(239, 68, 68, 0.95) !important;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 1), inset 0 0 20px rgba(255, 215, 0, 0.9);
+            animation: winnerPopOnce 0.4s ease forwards;
+        }
+
+        @keyframes winnerPopOnce {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.12); }
+            100% { transform: scale(1); }
+        }
+
+        .center-art-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 0 1 40px;
+            min-height: 75px;
+            background: linear-gradient(135deg, #000084, #008080, #800080, #000084);
+            border: 2px solid #FFD700;
+            border-radius: 6px;
+            box-shadow: 0 3px 0 #b8860b;
+            cursor: pointer;
         }
 
         .balloons-grid {
@@ -236,7 +237,6 @@
             background: radial-gradient(circle at 35% 30%, #4ade80, #15803d 60%, #064e3b 100%) !important;
         }
 
-        /* تصميم نمط النجمة الذهبية مع خلفية ذهبية فخمة وحدود واضحة حول النجمة الداخلية */
         .balloon.legendary-gold-pulse, .balloon.revealed.is-legendary {
             animation: giantStarGlow 0.8s infinite alternate !important;
             background: radial-gradient(circle at center, #fff6b7 0%, #ffd700 45%, #b8860b 100%) !important;
@@ -255,7 +255,6 @@
             text-shadow: 0 0 10px #ffffff, 0 0 15px #ffcc00;
         }
 
-        /* تصميم نمط الثلاث دوائر (ومضة خفيفة ونجمة تتحرك بدون تكبير البالون) */
         .balloon.numbers-star-mild {
             animation: mildFlash 0.5s ease forwards;
         }
@@ -309,17 +308,29 @@
         .balloon.revealed .inner-word-grid { display: flex; }
         .balloon.revealed { background: rgba(15, 23, 42, 0.4) !important; }
 
+        /* حركة النجوم الطائرة الملتزمة بالمسار الثابت حتى تتوقف وتتلاشى حصرياً في مركز الخانة المستهدفة */
         .flying-word {
             position: fixed;
-            font-size: 1.1em;
+            font-size: 1.2em;
             z-index: 999;
             pointer-events: none;
-            animation: flyToScore 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            left: 0;
+            top: 0;
+            animation: flyAlongFixedRoute 1.4s cubic-bezier(0.15, 0.85, 0.25, 1) forwards;
         }
 
-        @keyframes flyToScore {
-            0% { transform: scale(1.4) translate(0, 0); opacity: 1; }
-            100% { transform: scale(0.6) translate(var(--destX), var(--destY)); opacity: 0.8; }
+        @keyframes flyAlongFixedRoute {
+            0% {
+                transform: translate(var(--startX), var(--startY)) scale(1.2);
+                opacity: 1;
+            }
+            85% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--destX), var(--destY)) scale(0.05);
+                opacity: 0;
+            }
         }
 
         .star-particle {
@@ -355,7 +366,7 @@
 
         <div class="top-panel-container">
             <div class="top-panel-wrapper">
-                <!-- خانة السكور والنمط الأيمن -->
+                <!-- خانة السكور والنمط الأيمن (الأول) -->
                 <div class="side-column" onclick="playKeyboardClick(); handleBoxClick('numbers')">
                     <div class="score-box mode-selector-box" id="container1">
                         تحدي الثلاث دوائر
@@ -365,7 +376,7 @@
                 <!-- زر الخلط الأوسط -->
                 <div class="center-art-box" onclick="playKeyboardClick(); triggerCenterMixOnly()" title="خلط وتصفير السكورات"></div>
 
-                <!-- خانة السكور والنمط الأيسر -->
+                <!-- خانة السكور والنمط الأيسر (الثاني) -->
                 <div class="side-column" onclick="playKeyboardClick(); handleBoxClick('key')">
                     <div class="score-box mode-selector-box" id="container2">
                         تحدي النجمة الذهبية
@@ -548,7 +559,8 @@
                         colIndex: col, 
                         wordData: wordObj,
                         revealed: false,
-                        selectedBySide: 0
+                        selectedBySide: 0,
+                        rowRevealed: false
                     });
                 }
             }
@@ -669,7 +681,13 @@
             let balloonEl = document.getElementById(`balloon-${index}`);
 
             if (gameMode === 'key') {
-                openRowGradually(item.rowIndex);
+                let rowIndex = item.rowIndex;
+                let firstInRow = balloonsData[rowIndex * 4];
+                if (firstInRow.rowRevealed) {
+                    closeRowGradually(rowIndex);
+                } else {
+                    openRowGradually(rowIndex);
+                }
             } else if (gameMode === 'numbers') {
                 if (item.revealed) {
                     let sideOwner = item.selectedBySide;
@@ -696,14 +714,13 @@
 
                 let sum1Count = selectionsSide1.length;
                 let sum2Count = selectionsSide2.length;
-                if (sum1Count >= mode && sum2Count >= mode && !isTieBreaker) {
-                    return;
-                }
-
+                
                 if (sum1Count < mode) {
                     currentTurnSide = 1;
                 } else if (sum2Count < mode) {
                     currentTurnSide = 2;
+                } else {
+                    return; 
                 }
 
                 playBalloonTone(item.wordData.count, 1);
@@ -723,38 +740,16 @@
                     }
 
                     createStarBurst(balloonEl, '#FFD700');
-                    animateFlyingWord(balloonEl, item.wordData);
+                    animateFlyingWord(balloonEl, item.wordData, currentTurnSide);
 
                     let recordObj = { val: item.wordData.val, count: item.wordData.count, balloonId: index };
 
-                    if (isTieBreaker) {
-                        if (currentTurnSide === 1) { 
-                            selectionsSide1 = [recordObj]; 
-                        } else {
-                            selectionsSide2 = [recordObj]; 
-                            if (selectionsSide1[0].val === selectionsSide2[0].val) {
-                            } else {
-                                isTieBreaker = false; 
-                            }
-                        }
+                    if (currentTurnSide === 1) {
+                        selectionsSide1.push(recordObj);
                     } else {
-                        if (currentTurnSide === 1) {
-                            selectionsSide1.push(recordObj);
-                        } else {
-                            selectionsSide2.push(recordObj);
-                            if (selectionsSide1.length >= mode && selectionsSide2.length >= mode) {
-                                let sum1 = selectionsSide1.reduce((acc, w) => acc + w.val, 0);
-                                let sum2 = selectionsSide2.reduce((acc, w) => acc + w.val, 0);
-                                if (sum1 === sum2) { 
-                                    isTieBreaker = true; 
-                                    selectionsSide1 = [];
-                                    selectionsSide2 = [];
-                                    balloonsData.forEach(b => { b.revealed = false; b.selectedBySide = 0; });
-                                    renderBalloons();
-                                }
-                            }
-                        }
+                        selectionsSide2.push(recordObj);
                     }
+
                     updateScoresDisplay();
                 }, 250);
             }
@@ -762,13 +757,13 @@
 
         function openRowGradually(rowIndex) {
             let startIndex = rowIndex * 4;
+            balloonsData[startIndex].rowRevealed = true;
             for (let i = 0; i < 4; i++) {
                 let balloonIdx = startIndex + i;
                 let balloonEl = document.getElementById(`balloon-${balloonIdx}`);
-                if (balloonEl && !balloonEl.classList.contains('revealed')) {
+                if (balloonEl) {
                     let wordData = balloonsData[balloonIdx].wordData;
                     setTimeout(() => {
-                        if (legendaryKeyFound && gameMode === 'key') return;
                         balloonEl.classList.add('revealed');
                         balloonsData[balloonIdx].revealed = true;
                         if (wordData.val === 8) {
@@ -782,6 +777,25 @@
                     }, i * 300);
                 }
             }
+        }
+
+        function closeRowGradually(rowIndex) {
+            let startIndex = rowIndex * 4;
+            balloonsData[startIndex].rowRevealed = false;
+            for (let i = 0; i < 4; i++) {
+                let balloonIdx = startIndex + i;
+                let balloonEl = document.getElementById(`balloon-${balloonIdx}`);
+                let item = balloonsData[balloonIdx];
+                if (balloonEl) {
+                    item.revealed = false;
+                    balloonEl.classList.remove('revealed', 'legendary-gold-pulse', 'is-legendary');
+                    let textSpan = balloonEl.querySelector('.balloon-text');
+                    textSpan.className = "balloon-text";
+                    textSpan.innerHTML = formatBalloonText(item.text);
+                    textSpan.style.color = '#000000';
+                }
+            }
+            playKeyboardClick();
         }
 
         function createStarBurst(element, color) {
@@ -802,21 +816,35 @@
             }
         }
 
-        function animateFlyingWord(element, wordData) {
+        /* نظام النقاط المرجعية الثابتة ورسم المسار الموجه حصرياً لمركز خانة اللاعب المعني دون تجاوز أو انحراف */
+        function animateFlyingWord(element, wordData, turnSide) {
             let rect = element.getBoundingClientRect();
-            let targetContainer = document.getElementById('container1');
+            
+            // تحديد نقطة المرجع الثابتة المطلقة لخانة سكور اللاعب حصرياً
+            let targetContainer = document.getElementById(turnSide === 1 ? 'container1' : 'container2');
             let targetRect = targetContainer.getBoundingClientRect();
+
             let flyer = document.createElement('div');
             flyer.className = 'flying-word';
             let tempHTML = '';
             for(let s=0; s<wordData.count; s++) tempHTML += '⭐';
             flyer.innerHTML = tempHTML;
-            flyer.style.left = `${rect.left}px`;
-            flyer.style.top = `${rect.top}px`;
-            flyer.style.setProperty('--destX', `${targetRect.left + 20 - rect.left}px`);
-            flyer.style.setProperty('--destY', `${targetRect.top + 20 - rect.top}px`);
+
+            // إحداثيات نقطة البداية (مركز الدائرة المفتوحة)
+            let startX = rect.left + (rect.width / 2);
+            let startY = rect.top + (rect.height / 2);
+            
+            // الإحداثيات الدقيقة لمركز خانة السكور (نقطة الوصول الثابتة للمسار)
+            let destX = (targetRect.left + (targetRect.width / 2)) - startX;
+            let destY = (targetRect.top + (targetRect.height / 2)) - startY;
+
+            flyer.style.setProperty('--startX', `${startX}px`);
+            flyer.style.setProperty('--startY', `${startY}px`);
+            flyer.style.setProperty('--destX', `${destX}px`);
+            flyer.style.setProperty('--destY', `${destY}px`);
+
             document.body.appendChild(flyer);
-            setTimeout(() => flyer.remove(), 600);
+            setTimeout(() => flyer.remove(), 1400); // حركة بطيئة ومضبوطة تنتهي وتتلاشى بدقة متناهية في مركز الخانة
         }
 
         function stopContinuousSparks() {
@@ -853,13 +881,7 @@
         function triggerScreenSurpriseEffect() {
             if (resultTriggered) return;
             resultTriggered = true;
-            
             playSurpriseSound();
-            let viewport = document.getElementById('gameViewport');
-            viewport.classList.add('screen-surprise-pulse');
-            setTimeout(() => {
-                viewport.classList.remove('screen-surprise-pulse');
-            }, 700);
         }
 
         function updateScoresDisplay() {
@@ -875,15 +897,27 @@
             box1.innerHTML = `<div id="side1Badges" class="stars-egg-carton">${buildEggCartonScoreHTML(starsList1)}</div>`;
             box2.innerHTML = `<div id="side2Badges" class="stars-egg-carton">${buildEggCartonScoreHTML(starsList2)}</div>`;
 
-            box1.classList.remove('winner-gold-border');
-            box2.classList.remove('winner-gold-border');
+            box1.classList.remove('winner-gold-border', 'active-turn-glow');
+            box2.classList.remove('winner-gold-border', 'active-turn-glow');
 
-            if (selectionsSide1.length >= mode && selectionsSide2.length >= mode && !isTieBreaker) {
+            if (selectionsSide1.length >= mode && selectionsSide2.length >= mode) {
                 triggerScreenSurpriseEffect(); 
-                if (sum1 > sum2) { box1.classList.add('winner-gold-border'); startContinuousBorderSparks(box1); }
-                else if (sum2 > sum1) { box2.classList.add('winner-gold-border'); startContinuousBorderSparks(box2); }
+                if (sum1 > sum2) { 
+                    box1.classList.add('winner-gold-border'); 
+                    startContinuousBorderSparks(box1); 
+                } else if (sum2 > sum1) { 
+                    box2.classList.add('winner-gold-border'); 
+                    startContinuousBorderSparks(box2); 
+                }
             } else {
                 stopContinuousSparks();
+                let sum1Count = selectionsSide1.length;
+                let sum2Count = selectionsSide2.length;
+                if (sum1Count < mode) {
+                    box1.classList.add('active-turn-glow');
+                } else if (sum2Count < mode) {
+                    box2.classList.add('active-turn-glow');
+                }
             }
         }
 
